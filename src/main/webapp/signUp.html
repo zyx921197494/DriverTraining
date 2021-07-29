@@ -5,34 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册</title>
     <link rel="stylesheet" href="css/Login.css">
+    <script src="js2/jquery-3.3.1.min.js"></script>
+    <script src="js2/signUp.js"></script>
 </head>
 <body>
+
 <div class="form">
-    <h1>注册</h1>
+
     <div class="content">
         <div class="txtb">
-            <input type="text" id="username" autocomplete="off">
-            <span data-placeholder="Username"></span>
+            <input type="text" id="user" autocomplete="off" placeholder="用户名">
         </div>
         <div class="txtb">
-            <input type="text" id="idnum" autocomplete="off">
-            <span data-placeholder="身份证号"></span>
+            <input type="text" id="card" autocomplete="off" placeholder="身份证号">
         </div>
         <div class="txtb">
-            <input type="password" id="password">
-            <span data-placeholder="Password"></span>
+            <input type="password" id="password" placeholder="密码">
         </div>
-        <div class="layui-form-radioed">
-            <form class="layui-form-radio" method="post" action="">
-                <label><input name="identity" type="radio" value=""/>学员</label>
-                <label><input name="identity" type="radio" value=""/>教练</label>
-            </form>
+        <div class="txtb">
+            <input type="email" id="email" placeholder="邮箱">
         </div>
-        <a href="#" id="submit">注册</a>
-
+        <select name="identity" id="identity">
+            <option value="student">学员</option>
+            <option value="teacher">教练</option>
+        </select><br>
+        <div id="userCue"><h2><font color="#4682b4">欢迎注册</font></h2></div>
+        <button type="submit" id="submit">注册</button>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="js/Login.js"></script>
 </body>
 </html>

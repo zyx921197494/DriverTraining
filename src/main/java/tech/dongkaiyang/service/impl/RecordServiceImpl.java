@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.dongkaiyang.dao.RecordDao;
 import tech.dongkaiyang.domain.Record;
-import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 
 import java.util.List;
@@ -21,18 +20,18 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public List<Record> findAllRecords(String name) {
-        return recordDao.findRecordsByName(name);
+    public List<Record> findAllRecords(String card) {
+        return recordDao.selectRecordsByName(card);
     }
 
     @Override
     public List<Record> findAll() {
-        return recordDao.findAll();
+        return recordDao.selectAll();
     }
 
     @Override
-    public boolean updateStatus(int id) {
-        return recordDao.updateStatus(id);
+    public boolean updateStatus(int id,int status) {
+        return recordDao.updateStatus(id, status);
     }
 
 

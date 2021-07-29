@@ -55,4 +55,20 @@
     <aop:config>
         <aop:advisor advice-ref="txAdvice" pointcut="execution(* tech.dongkaiyang.service.impl.*ServiceImpl.*(..))"/>
     </aop:config>
+
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.qq.com"/>
+        <property name="username" value="921197494@qq.com"/>
+        <property name="password" value="mcmwiieutmknbfbj"/>
+<!--        <property name="defaultEncoding" value="UTF-8"/>-->
+        <property name="javaMailProperties">
+            <props>
+<!--                <prop key="mail.smtp.auth">true</prop>-->
+                <prop key="mail.smtp.ssl.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
+
 </beans>

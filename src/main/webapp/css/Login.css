@@ -29,7 +29,7 @@ h1{
 .content{
     position: absolute;
     width: 330px;
-    height: 315px;
+    height: 615px;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);

@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public class Record {
 
     private int id;
-    private int stuId;
-    private int teaId;
+    private String stuCard;
+    private String teaCard;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;

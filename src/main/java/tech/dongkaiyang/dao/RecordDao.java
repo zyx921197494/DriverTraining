@@ -22,21 +22,27 @@ public interface RecordDao {
     /**
      * 由用户名查询记录
      *
-     * @param name
+     * @param card
      * @return
      */
-    @Select("select * from record where name=#{name}")
-    List<Record> findRecordsByName(String name);
+    @Select("select * from record where card=#{card}")
+    List<Record> selectRecordsByName(String card);
 
     /**
      * 查询所有记录
      * @return
      */
     @Select("select * from record order by end_time desc;")
-    List<Record> findAll();
+    List<Record> selectAll();
 
 
-    @Update("update record set status=1 where id=#{recordId}")
-    boolean updateStatus(int recordId);
+    /**
+     * 更改record记录的状态(即教练接受预约申请)
+     * @param recordId
+     * @param status
+     * @return
+     */
+    @Update("update record set status=#{status} where id=#{recordId}")
+    boolean updateStatus(int recordId, int status);
 
 }
