@@ -11,15 +11,15 @@ var navs = [{
 		"href": "form.html"
 	}]
 }, {
-	"title": "权限管理",
+	"title": "人员管理",
 	"icon": "fa-cogs",
 	"spread": false,
 	"children": [{
-		"title": "管理员名单",
+		"title": "教练注册审核",
 		"icon": "fa-table",
 		"href": "begtable.html"
 	}, {
-		"title": "权限修改",
+		"title": "教练等级修改",
 		"icon": "fa-navicon",
 		"href": "navbar.html"
 	}]

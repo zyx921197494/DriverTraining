@@ -15,12 +15,18 @@
             <span data-placeholder="Username"></span>
         </div>
         <div class="txtb">
-            <input type="password" id="password">
-            <span data-placeholder="Password"></span>
+            <input type="text" id="idnum" autocomplete="off">
+            <span data-placeholder="身份证号"></span>
         </div>
         <div class="txtb">
             <input type="password" id="password">
             <span data-placeholder="Password"></span>
+        </div>
+        <div class="layui-form-radioed">
+            <form class="layui-form-radio" method="post" action="">
+                <label><input name="identity" type="radio" value=""/>学员</label>
+                <label><input name="identity" type="radio" value=""/>教练</label>
+            </form>
         </div>
         <a href="#" id="submit">注册</a>
 
