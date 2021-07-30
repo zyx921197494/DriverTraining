@@ -21,14 +21,21 @@ public interface RecordService {
      * @param card
      * @return
      */
-    List<Record> findAllRecords(String card);
+    List<Record> findUserRecords(String card);
 
     /**
-     * 管理员查看已有所有学习记录
+     * 管理员查看已有所有学员学习记录
      *
      * @return
      */
-    List<Record> findAll();
+    List<Record> findAllStuRecords(String stuName);
+
+    /**
+     * 管理员查看已有所有教练上课记录
+     *
+     * @return
+     */
+    List<Record> findAllTeaRecords(String teaName);
 
     /**
      * 更新record状态
@@ -36,6 +43,6 @@ public interface RecordService {
      * @param id
      * @return
      */
-    boolean updateStatus(int id, int status);
+    boolean updateStatus(int status,int id);
 
 }

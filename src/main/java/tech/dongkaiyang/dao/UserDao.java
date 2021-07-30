@@ -1,8 +1,10 @@
 package tech.dongkaiyang.dao;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import tech.dongkaiyang.domain.Record;
 import tech.dongkaiyang.domain.User;
 
 import java.util.List;
@@ -11,7 +13,7 @@ public interface UserDao {
     /**
      * 新增用户
      */
-    @Insert("insert into user (name,password) values (#{name},#{password})")
+    @Insert("insert into user (card, email, name, password, identity, rank) values (#{card}, #{email}, #{name}, #{password}, #{identity}, #{rank})")
     public void insertUser(User user);
 
     /**
@@ -24,12 +26,12 @@ public interface UserDao {
     User queryUserByName(String name);
 
     /**
-     * 按用户名密码查询用户
+     * 按用户身份证card用户
      *
      * @param user
      * @return
      */
-    @Select("select * from user where name=#{name} and password=#{password}")
+    @Select("select * from user where card=#{card}")
     User queryUser(User user);
 
     /**
@@ -42,27 +44,48 @@ public interface UserDao {
 
     /**
      * 查找所有教练名单
+     *
      * @return
      */
-    @Select("select id, name from user where identity=2")
+    @Select("select id, name, card, rank from user where identity=2")
     List<User> selectAvailable();
 
     /**
+     * 管理员查找教练申请名单
+     *
+     * @return
+     */
+    @Select("select id, card, email, name from user where identity=3")
+    List<User> selectRegisterTea();
+
+    /**
      * 更改用户身份
+     *
      * @param card
      * @param identity
      * @return
      */
-    @Update("update identity set identity=#{identity} where card=#{card}")
-    boolean updateIdentity(String card, String identity);
+    @Update("update user set identity=#{identity} where card=#{card}")
+    boolean updateIdentity(@Param("card") String card, @Param("identity") int identity);
 
     /**
      * 更改教练等级
+     *
      * @param card
      * @param rank
      * @return
      */
-    @Update("update rank set rank=#{rank} where card=#{card} and identity=2")
-    boolean updateRank(String card, String rank);
+    @Update("update user set rank=#{rank} where card=#{card} and identity=2")
+    boolean updateRank(@Param("card") String card,@Param("rank") int rank);
+
+    /**
+     * 身份证或邮箱是否被使用
+     *
+     * @param s
+     * @return
+     */
+    @Select("SELECT count(1) FROM user WHERE card = #{s} or email=#{s}")
+    int selectCardOrEmail(String s);
+
 
 }

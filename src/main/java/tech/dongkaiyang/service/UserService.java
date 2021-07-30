@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
 
     /**
-     * 根据教练查询其为审核请求
+     * 根据教练查询其未审核请求
      * @param card
      * @return
      */
@@ -60,7 +60,7 @@ public interface UserService {
      * @param s
      * @return
      */
-    boolean verify(String s);
+    int verify(String s);
 
     /**
      * 验证用户名密码
@@ -68,7 +68,7 @@ public interface UserService {
      * @param user
      * @return
      */
-    boolean queryUser(User user);
+    User queryUser(User user);
 
     /**
      * 由姓名查找用户ID
@@ -106,4 +106,10 @@ public interface UserService {
      * @return
      */
     List<User> findAvailable();
+
+    /**
+     * 查看未审核的注册教练
+     * @return
+     */
+    List<User> findRegisterTea();
 }

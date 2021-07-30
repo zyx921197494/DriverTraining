@@ -9,11 +9,16 @@ import tech.dongkaiyang.domain.Record;
 import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
+import tech.dongkaiyang.util.ImageUtil;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -31,6 +36,7 @@ public class UserController {
 
     /**
      * 检测身份证或邮箱是否可用
+     * 测试
      *
      * @param s
      * @return
@@ -38,107 +44,96 @@ public class UserController {
     @RequestMapping(value = "/verify/check", method = RequestMethod.POST)
     @ResponseBody
     public boolean check(@RequestParam("s") String s) {
-        return userService.verify(s);
+        return userService.verify(s) == 0;
     }
 
     /**
-     * 注册时发送验证邮件
+     * 发送验证邮件
+     * JUnit测试
      *
      * @param
      * @return
      */
     @RequestMapping("/verify/sendEmail")
     @ResponseBody
-    public String sendEmail(@RequestParam("email") String email) throws MessagingException {
+    public String sendEmail(@RequestParam("email") String email, HttpSession session) throws MessagingException {
         System.out.println(mailSender == null);
         StringBuilder code = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
             code.append(random.nextInt(9));
         }
-        System.out.println(code.toString());
+        System.out.println(code);
+        session.setAttribute("code", code.toString());
+
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
-        try {
-            helper = new MimeMessageHelper(message, true);
-            helper.setSubject("注册验证码");
-            helper.setText("你的注册验证码为：" + code.toString() + " 请尽快验证", false);
-            helper.setTo(email);
-            helper.setFrom("921197494@qq.com");
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            System.out.println(e.getCause());
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            userService.insertCode(code.toString());
-        }
+        MimeMessageHelper helper;
+        helper = new MimeMessageHelper(message, true);
+        helper.setSubject("注册验证码");
+        helper.setText("你的注册验证码为：" + code.toString() + " ，请尽快验证", false);
+        helper.setTo(email);
+        helper.setFrom("921197494@qq.com");
+        mailSender.send(message);
 
         return "邮件发送成功";
     }
 
     /**
-     * 校验验证码合法性
+     * 获得验证码
      *
-     * @param code
-     * @return
+     * @param response
+     * @param session
+     * @throws IOException
      */
-    @RequestMapping("/verify/code")
-    @ResponseBody
-    public boolean verifyCode(@RequestParam String code) {
-        boolean success = false;
-        if (userService.validateCode(code)) {
-            if (userService.deleteCode(code)) {
-                success = true;
-            }
-        }
-        return success;
+    @RequestMapping("/verify/getImageCode")
+    public void getImageCode(HttpServletResponse response, HttpSession session) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        String imageCode = ImageUtil.drawImage(output);
+        session.setAttribute("imageCode", imageCode);
+        ServletOutputStream out = response.getOutputStream();
+        output.writeTo(out);
     }
-
-    @RequestMapping("/verify/getImage")
-    public String getImage() {
-        return "";
-    }
-
-    @RequestMapping("/verify/image")
-    public String verifyImage() {
-        return "";
-    }
-
 
     /**
      * 注册页面
+     * 数据库测试
      *
      * @param user
      * @return
      */
+    // TODO 注册成功后重定向到登录页面
     @RequestMapping(value = "/verify/signUp", method = RequestMethod.POST)
     @ResponseBody
-    public boolean signUp(@RequestBody User user) {
+    public boolean signUp(@RequestBody User user, HttpSession session, @RequestParam("code") String userCode) {
         if (user.getIdentity() == 1) {
             user.setRank(0);
         }
-        return userService.insertUser(user);
+        String code = (String) session.getAttribute("code");
+        return (userCode.equalsIgnoreCase(code) && userService.insertUser(user));
     }
 
     /**
-     * 登陆进入功能页面
+     * 校验验证码，登陆进入功能页面
      *
      * @param user
      * @return
      */
     @RequestMapping(value = "/verify/login", method = RequestMethod.POST)
-    public String menuPage(@RequestBody User user, HttpServletRequest request) {
-        boolean exist = userService.queryUser(user);
-        if (!exist) {
-            request.setAttribute("msg", "身份证或密码错误");
-            return "login";
+    public String login(@RequestBody User user, HttpSession session, @RequestParam("userImageCode") String userImageCode) {
+        User dbUser = userService.queryUser(user);
+        if (dbUser == null) {
+            session.setAttribute("msg", "身份证或密码错误");
+            return "index";
         }
-        user.setPassword(null);
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
+        String imageCode = (String) session.getAttribute("imageCode");
+        if (!userImageCode.equalsIgnoreCase(imageCode)) {
+            session.setAttribute("msg", "验证码错误");
+            return "index";
+        }
+        dbUser.setPassword(null);
+        session.setAttribute("user", dbUser);
 
-        switch (user.getIdentity()) {
+        switch (dbUser.getIdentity()) {
             case 1:
                 return "studentIndex";
             case 2:
@@ -151,48 +146,25 @@ public class UserController {
 
     /**
      * 根据用户身份证查询学员所有学习记录、教练所有上课记录
+     * 测试
      *
-     * @param request
+     * @param session
      * @return
      */
     // TODO 查找用户所属记录、修改路径名、修改传参
-    @PostMapping("/findRecords")
+    @PostMapping("/findUserRecords")
     @ResponseBody
-    public List<Record> findRecords(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+    public List<Record> findRecords(HttpSession session) {
         String card = ((User) session.getAttribute("user")).getCard();
-        List<Record> records = recordService.findAllRecords(card);
+        List<Record> records = recordService.findUserRecords(card);
         session.setAttribute("records", records);
         return records;
     }
 
-    /**
-     * 管理员查询所有记录
-     *
-     * @return
-     */
-    // TODO 管理员查询所有记录
-    @PostMapping("/findAll")
-    @ResponseBody
-    public List<Record> findAllRecords() {
-        return recordService.findAll();
-    }
-
-    /**
-     * 根据身份证查找
-     *
-     * @param request
-     * @return
-     */
-//    // TODO 根据用户名name查找用户id，用于申请的提交与接收
-//    @PostMapping("/findId")
-//    public int findUserIdByName(HttpServletRequest request) {
-//        String name = (String) request.getSession().getAttribute("name");
-//        return userService.queryUserId(name).getId();
-//    }
 
     /**
      * 学员查看教练名单
+     * 测试
      *
      * @param request
      * @return
@@ -207,6 +179,9 @@ public class UserController {
     }
 
     /**
+     * 学员提交申请
+     * 测试
+     *
      * @param record
      * @return
      */
@@ -220,6 +195,7 @@ public class UserController {
 
     /**
      * 教练查看未审核请求
+     * 测试
      *
      * @param card
      * @return
@@ -232,6 +208,7 @@ public class UserController {
 
     /**
      * 教练通过recordId审核学员申请，申请目标状态为status
+     * 测试
      *
      * @param id
      * @param status
@@ -240,8 +217,8 @@ public class UserController {
     // TODO 教练接受请求
     @RequestMapping("/tea/accept")
     @ResponseBody
-    public boolean acceptApply(@RequestParam("id") int id, @RequestParam("status") int status) {
-        return recordService.updateStatus(id, status);
+    public boolean acceptApply(@RequestParam("status") int status, @RequestParam("id") int id) {
+        return recordService.updateStatus(status, id);
     }
 
     /**
@@ -257,28 +234,74 @@ public class UserController {
         return "quit";
     }
 
+
+    /**
+     * 管理员按用户名查询学员记录
+     * 测试
+     *
+     * @return
+     */
+    @PostMapping("/admin/findAllStuRecords")
+    @ResponseBody
+    public List<Record> findAllStuRecords(@RequestParam("stuName") String stuName) {
+        return recordService.findAllStuRecords("%" + stuName + "%");
+    }
+
+    /**
+     * 管理员按用户名查询教练记录
+     * 测试
+     *
+     * @return
+     */
+    @PostMapping("/admin/findAllTeaRecords")
+    @ResponseBody
+    public List<Record> findAllTeaRecords(@RequestParam("teaName") String teaName) {
+        return recordService.findAllTeaRecords("%" + teaName + "%");
+    }
+
+
     /**
      * 管理员改变教练等级
+     * 测试
      *
      * @param card
      * @param rank
      * @return
      */
     @PostMapping("/admin/changeRank")
+    @ResponseBody
     public boolean changeRank(@RequestParam("card") String card, @RequestParam("rank") int rank) {
         return userService.changeRank(card, rank);
     }
 
     /**
+     * 管理员查看未审核的教练注册名单
+     * 测试
+     *
+     * @return
+     */
+    @PostMapping("/admin/findRegisterTea")
+    @ResponseBody
+    public List<User> findRegisterTea() {
+        return userService.findRegisterTea();
+    }
+
+    /**
      * 管理员审核教练注册
+     * 测试
      *
      * @param card
      * @param identity
      * @return
      */
     @PostMapping("/admin/accept")
-    public boolean accept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
-        return userService.changeIdentity(card, identity);
+    @ResponseBody
+    public boolean adminAccept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
+        if (identity == 2) {
+            return userService.changeIdentity(card, identity) && userService.changeRank(card, 1);
+        } else {
+            return userService.changeIdentity(card, 1);
+        }
     }
 
 }

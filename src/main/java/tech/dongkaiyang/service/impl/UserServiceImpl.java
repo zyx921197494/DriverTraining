@@ -2,6 +2,7 @@ package tech.dongkaiyang.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tech.dongkaiyang.dao.RecordDao;
 import tech.dongkaiyang.dao.UserDao;
 import tech.dongkaiyang.domain.Record;
 import tech.dongkaiyang.domain.User;
@@ -15,18 +16,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RecordDao recordDao;
+
     @Override
     public List<Record> searchRecord(String card) {
-        return null;
+        return recordDao.selectUnaccepted(card);
     }
 
+    @Override
     public boolean changeIdentity(String card, int identity) {
-        return true;
+        return userDao.updateIdentity(card,identity);
     }
 
     @Override
     public boolean changeRank(String card, int rank) {
-        return false;
+        return userDao.updateRank(card, rank);
     }
 
     @Override
@@ -51,14 +56,14 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public boolean verify(String s) {
-        return false;
+    public int verify(String s) {
+        return userDao.selectCardOrEmail(s);
     }
 
     @Override
-    public boolean queryUser(User user) {
+    public User queryUser(User user) {
         User u = userDao.queryUser(user);
-        return u != null;
+        return u;
     }
 
     @Override
@@ -92,5 +97,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAvailable() {
         return userDao.selectAvailable();
+    }
+
+    @Override
+    public List<User> findRegisterTea() {
+        return userDao.selectRegisterTea();
     }
 }
