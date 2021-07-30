@@ -21,5 +21,10 @@
       <option name="name" value="Central Repository" />
       <option name="url" value="https://maven.aliyun.com/repository/public" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="shuaijunlan-github-maven-repository" />
+      <option name="name" value="shuaijunlan-github-maven-repository" />
+      <option name="url" value="https://raw.githubusercontent.com/shuaijunlan/shuaijunlan.github.io/master" />
+    </remote-repository>
   </component>
 </project>

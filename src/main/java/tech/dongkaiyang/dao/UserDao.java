@@ -31,7 +31,7 @@ public interface UserDao {
      * @param user
      * @return
      */
-    @Select("select * from user where card=#{card}")
+    @Select("select * from user where card=#{card} and password=#{password}")
     User queryUser(User user);
 
     /**

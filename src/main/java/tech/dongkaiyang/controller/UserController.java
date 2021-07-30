@@ -9,14 +9,16 @@ import tech.dongkaiyang.domain.Record;
 import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
-import tech.dongkaiyang.util.ImageUtil;
 
+import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -78,21 +80,6 @@ public class UserController {
         return "邮件发送成功";
     }
 
-    /**
-     * 获得验证码
-     *
-     * @param response
-     * @param session
-     * @throws IOException
-     */
-    @RequestMapping("/verify/getImageCode")
-    public void getImageCode(HttpServletResponse response, HttpSession session) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        String imageCode = ImageUtil.drawImage(output);
-        session.setAttribute("imageCode", imageCode);
-        ServletOutputStream out = response.getOutputStream();
-        output.writeTo(out);
-    }
 
     /**
      * 注册页面
@@ -113,21 +100,16 @@ public class UserController {
     }
 
     /**
-     * 校验验证码，登陆进入功能页面
+     * 登陆进入功能页面
      *
      * @param user
      * @return
      */
     @RequestMapping(value = "/verify/login", method = RequestMethod.POST)
-    public String login(@RequestBody User user, HttpSession session, @RequestParam("userImageCode") String userImageCode) {
+    public String login(@RequestBody User user, HttpSession session) {
         User dbUser = userService.queryUser(user);
         if (dbUser == null) {
             session.setAttribute("msg", "身份证或密码错误");
-            return "index";
-        }
-        String imageCode = (String) session.getAttribute("imageCode");
-        if (!userImageCode.equalsIgnoreCase(imageCode)) {
-            session.setAttribute("msg", "验证码错误");
             return "index";
         }
         dbUser.setPassword(null);
@@ -303,5 +285,8 @@ public class UserController {
             return userService.changeIdentity(card, 1);
         }
     }
+
+
+
 
 }
