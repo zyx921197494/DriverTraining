@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User queryUser(User user) {
-        User u = userDao.queryUser(user);
+    public User queryUser(String card, String password) {
+        User u = userDao.queryUser(card, password);
         return u;
     }
 

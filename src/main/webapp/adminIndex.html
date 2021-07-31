@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
     <link rel="stylesheet" href="admincss/global.css" media="all">
     <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <script src="js2/jquery-3.3.1.min.js"></script>
 
 </head>
 
@@ -34,8 +35,21 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;" class="admin-header-user">
                         <img src="images/head.jpg"/>
-                        <span>管理员</span>
+                        <span id="nameId"></span>
                     </a>
+                    <script>
+                        $.ajax({
+                            type: "POST",
+                            url: "/getCurrentUser",
+                            // data:sendData,
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (user) {
+                                var name = user.name;
+                                $('#nameId').html(name);
+                            }
+                        })
+                    </script>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="quit.html"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>

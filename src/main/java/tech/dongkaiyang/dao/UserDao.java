@@ -32,7 +32,7 @@ public interface UserDao {
      * @return
      */
     @Select("select * from user where card=#{card} and password=#{password}")
-    User queryUser(User user);
+    User queryUser(@Param("card") String card, @Param("password") String password);
 
     /**
      * 查找所有用户

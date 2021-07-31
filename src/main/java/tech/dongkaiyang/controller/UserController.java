@@ -6,20 +6,19 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tech.dongkaiyang.domain.Record;
+import tech.dongkaiyang.domain.Result;
 import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
 
-import javax.imageio.ImageIO;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -88,7 +87,7 @@ public class UserController {
      * @param user
      * @return
      */
-    // TODO 注册成功后重定向到登录页面
+    // TODO 注册成功后到登录页面
     @RequestMapping(value = "/verify/signUp", method = RequestMethod.POST)
     @ResponseBody
     public boolean signUp(@RequestBody User user, HttpSession session, @RequestParam("code") String userCode) {
@@ -106,24 +105,26 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/verify/login", method = RequestMethod.POST)
-    public String login(@RequestBody User user, HttpSession session) {
-        User dbUser = userService.queryUser(user);
+    @ResponseBody
+    public Result login(@RequestBody User user, HttpServletRequest request) throws IOException, ServletException {
+        User dbUser = userService.queryUser(user.getCard(), user.getPassword());
+        HttpSession session = request.getSession();
         if (dbUser == null) {
-            session.setAttribute("msg", "身份证或密码错误");
-            return "index";
+            return new Result("0", "http://localhost:8080/index.html");
         }
         dbUser.setPassword(null);
         session.setAttribute("user", dbUser);
 
         switch (dbUser.getIdentity()) {
             case 1:
-                return "studentIndex";
+                return new Result("1", "http://localhost:8080/studentIndex.html");
             case 2:
-                return "teacherIndex";
+                return new Result("2", "http://localhost:8080/teacherIndex.html");
             case 4:
-                return "adminIndex";
+                return new Result("4", "http://localhost:8080/adminIndex.html");
+            default:
+                return new Result("0", "http://localhost:8080/index.html");
         }
-        return "404";
     }
 
     /**
@@ -192,8 +193,8 @@ public class UserController {
      * 教练通过recordId审核学员申请，申请目标状态为status
      * 测试
      *
-     * @param id
      * @param status
+     * @param id
      * @return
      */
     // TODO 教练接受请求
@@ -213,7 +214,7 @@ public class UserController {
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
-        return "quit";
+        return "html/quit";
     }
 
 
@@ -286,7 +287,10 @@ public class UserController {
         }
     }
 
-
-
+    @PostMapping("/getCurrentUser")
+    @ResponseBody
+    public User getCurrentUser(HttpSession session) {
+        return (User) session.getAttribute("user");
+    }
 
 }

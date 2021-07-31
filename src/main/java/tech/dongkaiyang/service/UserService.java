@@ -9,6 +9,7 @@ public interface UserService {
 
     /**
      * 根据教练查询其未审核请求
+     *
      * @param card
      * @return
      */
@@ -16,6 +17,7 @@ public interface UserService {
 
     /**
      * 改变用户identity(管理员接收教练注册申请)
+     *
      * @param card
      * @param identity
      * @return
@@ -57,6 +59,7 @@ public interface UserService {
 
     /**
      * 验证身份证或邮箱是否可用
+     *
      * @param s
      * @return
      */
@@ -65,10 +68,11 @@ public interface UserService {
     /**
      * 验证用户名密码
      *
-     * @param user
+     * @param card
+     * @param password
      * @return
      */
-    User queryUser(User user);
+    User queryUser(String card, String password);
 
     /**
      * 由姓名查找用户ID
@@ -109,6 +113,7 @@ public interface UserService {
 
     /**
      * 查看未审核的注册教练
+     *
      * @return
      */
     List<User> findRegisterTea();

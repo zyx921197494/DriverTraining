@@ -18,7 +18,7 @@
 <body class="admin-main">
 
 <blockquote class="layui-elem-quote">
-    <a href="javascript:;" class="layui-btn layui-btn-small" id="add">
+    <a href="studentIndex.html" class="layui-btn layui-btn-small" id="add">
         <i class="layui-icon">&#xe608;</i> 返回主页
     </a>
 </blockquote>
@@ -31,19 +31,26 @@
 
     <form class="layui-form" action="">
         <div class="layui-form-item">
-
             <div class="layui-inline">
-                <label class="layui-form-label">选择日期</label>
+                <label class="layui-form-label">开始日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="date" lay-verify="date" placeholder="yyyy-mm-dd"
+                    <input type="text" name="date" id="startdate" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
                            autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
                 </div>
             </div>
-
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">结束日期</label>
+                <div class="layui-input-block">
+                    <input type="text" name="date" id="enddate" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
+                           autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+                </div>
+            </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">选择教练</label>
+            <label class="layui-form-label">教练</label>
             <div class="layui-input-block">
                 <select name="interest" lay-filter="aihao">
                     <option value=""></option>
@@ -57,14 +64,14 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">选择时间段</label>
+            <label class="layui-form-label">训练地点</label>
             <div class="layui-input-block">
                 <select name="interest" lay-filter="aihao">
                     <option value=""></option>
-                    <option value="0">8:00~10:00</option>
-                    <option value="1">10:00~12:00</option>
-                    <option value="2">14:00~16:00</option>
-                    <option value="3">16:00~18:00</option>
+                    <option value="0">训练场1</option>
+                    <option value="1">训练场2</option>
+                    <option value="2">训练场3</option>
+                    <option value="3">训练场4</option>
                 </select>
             </div>
         </div>

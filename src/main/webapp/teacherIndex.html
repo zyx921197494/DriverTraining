@@ -15,12 +15,27 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
-    <script src="js/menuPage.js"></script>
+    <script src="/js/menuPage.js"></script>
 </head>
 <body>
 <div class="jumbotron">
     <div class="container">
-        <h3>你好！<font color="#6495ed">教练 XXX</font></h3>
+        <h3>你好！
+            <font color='6495ed'><div id="nameId"></div></font>
+        </h3>
+        <script>
+            $.ajax({
+                type: "POST",
+                url: "/getCurrentUser",
+                // data:sendData,
+                dataType: "json",
+                contentType: "application/json",
+                success: function (user) {
+                    var name = user.name;
+                    $('#nameId').html(name);
+                }
+            })
+        </script>
         <p>欢迎使用驾驶培训服务系统</p>
         <br>
         <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='groupChatTest'">

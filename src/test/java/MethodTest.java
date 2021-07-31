@@ -7,18 +7,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.bind.annotation.RequestParam;
-import tech.dongkaiyang.controller.UserController;
-import tech.dongkaiyang.domain.Record;
-import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -29,7 +23,7 @@ import java.util.Random;
  * @Blog www.winkelblog.top
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:applicationContext.xml"})
+@ContextConfiguration({"classpath:spring/applicationContext.xml"})
 public class MethodTest {
 
     @Resource
@@ -74,7 +68,7 @@ public class MethodTest {
 //        User user = new User();
 //        user.setCard("1");
 //        System.out.println(userService.queryUser(user));
-
+        System.out.println(-4);
     }
 
 

@@ -20,23 +20,51 @@
 <body>
 <div class="jumbotron">
     <div class="container">
-        <h3>你好！<font color="#6495ed">用户 XXX</font></h3>
+        <h3>你好！
+            <font color='6495ed'><div id="nameId"></div></font>
+        </h3>
+        <script>
+            $.ajax({
+                type: "POST",
+                url: "/getCurrentUser",
+                // data:sendData,
+                dataType: "json",
+                contentType: "application/json",
+                success: function (user) {
+                    var name = user.name;
+                    $('#nameId').html(name);
+                }
+            })
+        </script>
         <p>欢迎使用驾驶培训服务系统</p>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='privateChatTest'">
+            <button type="button" class="btn btn-default btn-lg" id="button1">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 预约
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='groupChatTest'">
-            <span class="glyphicon glyphicon-th" aria-hidden="true"></span> 个人信息
-        </button>
-        <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='findMessageLog'">
+        <button type="button" class="btn btn-default btn-lg" id="button2">
             <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 查看预约/学习记录
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='logout'">
+        <button type="button" class="btn btn-default btn-lg" id="button3">
             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 退出登陆
         </button>
+        <script>
+            $("#button1").on('click', function() {
+                $(location).attr('href', "http://localhost:8080/studentApply.html");
+            })
+            $("#button2").on('click', function() {
+                $(location).attr('href', "http://localhost:8080/record.html");
+            })
+            $("#button3").on('click', function() {
+                $.ajax({
+                    type: "POST",
+                    url: "/logout",
+                    dataType: "json",
+                    contentType: "application/json",
+                })
+                $(location).attr('href', "http://localhost:8080/quit.html");
+            })
+        </script>
     </div>
 </div>
 </body>
