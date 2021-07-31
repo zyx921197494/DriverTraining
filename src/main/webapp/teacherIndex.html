@@ -38,17 +38,34 @@
         </script>
         <p>欢迎使用驾驶培训服务系统</p>
         <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='groupChatTest'">
-            <span class="glyphicon glyphicon-th" aria-hidden="true"></span> 个人信息
+        <button type="button" class="btn btn-default btn-lg"id="button1">
+            <span class="glyphicon glyphicon-th" aria-hidden="true"></span> 受理预约
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='findMessageLog'">
+        <button type="button" class="btn btn-default btn-lg"id="button2">
             <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 查看授课记录
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg" onclick="window.location.href='logout'">
+        <button type="button" class="btn btn-default btn-lg"id="button3">
             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 退出登陆
         </button>
+        <script>
+            $("#button1").on('click', function() {
+                $(location).attr('href', "http://localhost:8080/teacherAccept.html");
+            })
+            $("#button2").on('click', function() {
+                $(location).attr('href', "http://localhost:8080/record.html");
+            })
+            $("#button3").on('click', function() {
+                $.ajax({
+                    type: "POST",
+                    url: "/logout",
+                    dataType: "json",
+                    contentType: "application/json",
+                })
+                $(location).attr('href', "http://localhost:8080/quit.html");
+            })
+        </script>
     </div>
 </div>
 </body>

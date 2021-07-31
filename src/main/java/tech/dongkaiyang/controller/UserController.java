@@ -16,7 +16,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -76,7 +75,8 @@ public class UserController {
         helper.setFrom("921197494@qq.com");
         mailSender.send(message);
 
-        return "邮件发送成功";
+        System.out.println(code.toString());
+        return code.toString();
     }
 
 
@@ -90,12 +90,12 @@ public class UserController {
     // TODO 注册成功后到登录页面
     @RequestMapping(value = "/verify/signUp", method = RequestMethod.POST)
     @ResponseBody
-    public boolean signUp(@RequestBody User user, HttpSession session, @RequestParam("code") String userCode) {
+    public boolean signUp(@RequestBody User user) {
         if (user.getIdentity() == 1) {
             user.setRank(0);
         }
-        String code = (String) session.getAttribute("code");
-        return (userCode.equalsIgnoreCase(code) && userService.insertUser(user));
+//        String code = (String) session.getAttribute("code");
+        return  userService.insertUser(user);
     }
 
     /**

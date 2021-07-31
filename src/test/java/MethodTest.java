@@ -47,7 +47,7 @@ public class MethodTest {
 
 //        System.out.println(recordService.updateStatus(1, 6));
 
-
+        System.out.println(recordService.findUserRecords("1"));
 //        System.out.println(recordService.findAllTeaRecords("%" + "c" + "%"));
 //        System.out.println(userService.changeRank("3", 2));
 
@@ -68,7 +68,8 @@ public class MethodTest {
 //        User user = new User();
 //        user.setCard("1");
 //        System.out.println(userService.queryUser(user));
-        System.out.println(-4);
+
+
     }
 
 
@@ -88,7 +89,7 @@ public class MethodTest {
             helper = new MimeMessageHelper(message, true);
             helper.setSubject("注册验证码");
             helper.setText("你的注册验证码为：" + code.toString() + " 请尽快验证", false);
-            helper.setTo("winkelzyx@163.com");
+            helper.setTo("3403300680@qq.com");
             helper.setFrom("921197494@qq.com");
             mailSender.send(message);
         } catch (MessagingException e) {
