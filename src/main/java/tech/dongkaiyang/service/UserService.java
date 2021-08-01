@@ -34,30 +34,6 @@ public interface UserService {
     boolean changeRank(String card, int rank);
 
     /**
-     * 插入一条验证码
-     *
-     * @param code
-     * @return
-     */
-    boolean insertCode(String code);
-
-    /**
-     * 校验验证码是否合法
-     *
-     * @param code
-     * @return
-     */
-    boolean validateCode(String code);
-
-    /**
-     * 使验证码失效
-     *
-     * @param code
-     * @return
-     */
-    boolean deleteCode(String code);
-
-    /**
      * 验证身份证或邮箱是否可用
      *
      * @param s

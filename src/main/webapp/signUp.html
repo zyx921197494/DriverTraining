@@ -39,14 +39,13 @@
 
             $("#sendCode").click(function () {
                 var email = $("#email").val().trim();
-                if (email.length == 0) {
+                if (email.length === 0) {
                     alert("您未填写邮箱")
                     return;
                 } else {
                     $.ajax({
                         type: "GET",
                         url: "/verify/sendEmail?email=" + email,
-                        // data: sendData,
                         dataType: "json",
                         contentType: "application/json",
                         success: function (realCode) {
@@ -71,7 +70,7 @@
                                         });
                                         $.ajax({
                                             type: "POST",
-                                            url: "verify/signUp",
+                                            url: "/verify/signUp",
                                             data: sendData,
                                             dataType: "json",
                                             contentType: "application/json",

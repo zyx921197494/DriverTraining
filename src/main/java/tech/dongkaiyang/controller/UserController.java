@@ -10,6 +10,7 @@ import tech.dongkaiyang.domain.Result;
 import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
+import tech.dongkaiyang.vo.RecordVo;
 
 
 import javax.mail.MessagingException;
@@ -19,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
@@ -94,8 +98,7 @@ public class UserController {
         if (user.getIdentity() == 1) {
             user.setRank(0);
         }
-//        String code = (String) session.getAttribute("code");
-        return  userService.insertUser(user);
+        return userService.insertUser(user);
     }
 
     /**
@@ -137,11 +140,15 @@ public class UserController {
     // TODO 查找用户所属记录、修改路径名、修改传参
     @PostMapping("/findUserRecords")
     @ResponseBody
-    public List<Record> findRecords(HttpSession session) {
+    public Result<List<Record>> findRecords(HttpSession session) {
         String card = ((User) session.getAttribute("user")).getCard();
+        System.out.println("card = " + card);
         List<Record> records = recordService.findUserRecords(card);
+        if (records.isEmpty()) {
+            return Result.fail("查询记录失败");
+        }
         session.setAttribute("records", records);
-        return records;
+        return Result.success("查询记录成功", records);
     }
 
 
@@ -155,38 +162,67 @@ public class UserController {
     // TODO 查看可用教练名单
     @PostMapping("/stu/available")
     @ResponseBody
-    public List<User> getAvailable(HttpServletRequest request) {
+    public Result<List<User>> getAvailable(HttpServletRequest request) {
         List<User> available = userService.findAvailable();
+        if (available.isEmpty()) {
+            return Result.fail("教练名单获取失败");
+        }
         request.getSession().setAttribute("available", available);
-        return available;
+        return Result.success("获取教练名单成功", available);
     }
 
     /**
      * 学员提交申请
      * 测试
      *
-     * @param record
+     * @param recordVo
      * @return
      */
     // TODO 学员提交申请、检测时间先后正确
     @PostMapping("/stu/apply")
     @ResponseBody
-    public boolean submit(@RequestBody Record record) {
+    public Result submit(@RequestBody RecordVo recordVo, HttpSession session) {
+
+        User user = getSessionUser(session);
+
+        String[] start = recordVo.getStartTime().split(" ");
+        String[] end = recordVo.getEndTime().split(" ");
+
+        Record record = new Record();
+        LocalDateTime s = LocalDateTime.parse(start[0] + "T" + start[1], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime e = LocalDateTime.parse(end[0] + "T" + end[1], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        if (!e.isAfter(s)) {
+            return Result.fail("训练日期时间填写有误");
+        }
+        record.setStartTime(s);
+        record.setEndTime(e);
+
+        record.setStuCard(user.getCard());
+        record.setTeaCard(recordVo.getTeaCard());
+        record.setLocation(recordVo.getLocation());
         record.setStatus(0);
-        return recordService.insertRecord(record);
+
+        boolean success = recordService.insertRecord(record);
+        if (success) {
+            return Result.success("提交预约申请成功");
+        } else return Result.fail("提交预约申请失败");
     }
 
     /**
      * 教练查看未审核请求
      * 测试
      *
-     * @param card
+     * @param session
      * @return
      */
-    @RequestMapping("/tea/search")
+    @PostMapping("/tea/search")
     @ResponseBody
-    public List<Record> search(@RequestParam("card") String card) {
-        return userService.searchRecord(card);
+    public Result<List<Record>> search(HttpSession session) {
+        User user = getSessionUser(session);
+        List<Record> records = userService.searchRecord(user.getCard());
+        if (!records.isEmpty()) {
+            return Result.success("查询成功", records);
+        } else return Result.fail("未查找到未审核预约");
     }
 
     /**
@@ -198,10 +234,13 @@ public class UserController {
      * @return
      */
     // TODO 教练接受请求
-    @RequestMapping("/tea/accept")
+    @GetMapping("/tea/accept")
     @ResponseBody
-    public boolean acceptApply(@RequestParam("status") int status, @RequestParam("id") int id) {
-        return recordService.updateStatus(status, id);
+    public Result acceptApply(@RequestParam("status") int status, @RequestParam("id") int id) {
+        boolean success = recordService.updateStatus(status, id);
+        if (success) {
+            return Result.success("接受预约成功");
+        } else return Result.fail("接受预约失败");
     }
 
     /**
@@ -214,7 +253,7 @@ public class UserController {
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
-        return "html/quit";
+        return "quit";
     }
 
 
@@ -226,8 +265,12 @@ public class UserController {
      */
     @PostMapping("/admin/findAllStuRecords")
     @ResponseBody
-    public List<Record> findAllStuRecords(@RequestParam("stuName") String stuName) {
-        return recordService.findAllStuRecords("%" + stuName + "%");
+    public Result<List<Record>> findAllStuRecords(@RequestParam("stuName") String stuName) {
+        List<Record> records = recordService.findAllStuRecords("%" + stuName + "%");
+        if (records.isEmpty()) {
+            Result.fail("未查找到记录");
+        }
+        return Result.success("查询成功", records);
     }
 
     /**
@@ -238,8 +281,11 @@ public class UserController {
      */
     @PostMapping("/admin/findAllTeaRecords")
     @ResponseBody
-    public List<Record> findAllTeaRecords(@RequestParam("teaName") String teaName) {
-        return recordService.findAllTeaRecords("%" + teaName + "%");
+    public Result<List<Record>> findAllTeaRecords(@RequestParam("teaName") String teaName) {
+        List<Record> records = recordService.findAllTeaRecords("%" + teaName + "%");
+        if (records.isEmpty()) {
+            return Result.fail("查询教练记录失败");
+        } else return Result.success("查找教练记录成功", records);
     }
 
 
@@ -253,8 +299,12 @@ public class UserController {
      */
     @PostMapping("/admin/changeRank")
     @ResponseBody
-    public boolean changeRank(@RequestParam("card") String card, @RequestParam("rank") int rank) {
-        return userService.changeRank(card, rank);
+    public Result changeRank(@RequestParam("card") String card, @RequestParam("rank") int rank) {
+        boolean success = userService.changeRank(card, rank);
+        if (success) {
+            return Result.success("更改教练等级成功");
+        }
+        return Result.fail("更改教练等级失败");
     }
 
     /**
@@ -265,8 +315,12 @@ public class UserController {
      */
     @PostMapping("/admin/findRegisterTea")
     @ResponseBody
-    public List<User> findRegisterTea() {
-        return userService.findRegisterTea();
+    public Result<List<User>> findRegisterTea() {
+        List<User> teas = userService.findRegisterTea();
+        if (teas.isEmpty()) {
+            return Result.fail("未查到未审核的教练注册申请");
+        }
+        return Result.success("查询成功", teas);
     }
 
     /**
@@ -279,17 +333,23 @@ public class UserController {
      */
     @PostMapping("/admin/accept")
     @ResponseBody
-    public boolean adminAccept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
-        if (identity == 2) {
-            return userService.changeIdentity(card, identity) && userService.changeRank(card, 1);
-        } else {
-            return userService.changeIdentity(card, 1);
+    public Result adminAccept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
+        if (identity == 2 && userService.changeIdentity(card, identity) && userService.changeRank(card, 1)) {
+            return Result.success("提交成功，教练申请通过");
+        } else if (identity == 3 && userService.changeIdentity(card, 1)) {
+            return Result.success("提交成功，教练申请未通过");
         }
+        return Result.fail("审核提交失败");
     }
 
     @PostMapping("/getCurrentUser")
     @ResponseBody
     public User getCurrentUser(HttpSession session) {
+        return (User) session.getAttribute("user");
+    }
+
+
+    public User getSessionUser(HttpSession session) {
         return (User) session.getAttribute("user");
     }
 

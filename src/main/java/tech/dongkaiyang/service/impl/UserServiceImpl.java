@@ -21,7 +21,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Record> searchRecord(String card) {
-        return recordDao.selectUnaccepted(card);
+        List<Record> records = recordDao.selectUnaccepted(card);
+
+        for (Record record : records) {
+            System.out.println(record.getStartTime());
+        }
+        return records;
     }
 
     @Override
@@ -32,21 +37,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean changeRank(String card, int rank) {
         return userDao.updateRank(card, rank);
-    }
-
-    @Override
-    public boolean insertCode(String code) {
-        return false;
-    }
-
-    @Override
-    public boolean validateCode(String code) {
-        return false;
-    }
-
-    @Override
-    public boolean deleteCode(String code) {
-        return false;
     }
 
     /**

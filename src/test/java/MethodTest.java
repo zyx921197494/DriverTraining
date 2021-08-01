@@ -13,6 +13,8 @@ import tech.dongkaiyang.service.UserService;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 /**
@@ -68,10 +70,17 @@ public class MethodTest {
 //        User user = new User();
 //        user.setCard("1");
 //        System.out.println(userService.queryUser(user));
-
-
     }
 
+    @org.junit.Test
+    public void dateTimeTest() {
+        String s = "2021-07-30 11:10:11";
+        String[] ss = s.split(" ");
+        System.out.println("ss = " + ss);
+
+        LocalDateTime localDateTime = LocalDateTime.parse(ss[0] + "T" + ss[1], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println("localDateTime = " + localDateTime);
+    }
 
 
     @org.junit.Test

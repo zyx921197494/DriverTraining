@@ -2,6 +2,9 @@ package tech.dongkaiyang.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * @ClassName Result
@@ -11,13 +14,31 @@ import lombok.Data;
  * @Blog www.winkelblog.top
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class Result {
+public class Result<T> implements Serializable {
+
+    private String status;
 
     private String msg;
 
-    private String page;
+    private T data;
 
+    public Result(String status, String msg) {
+        this.status = status;
+        this.msg = msg;
+    }
 
+    public static <T> Result<T> success(String msg) {
+        return new Result<T>("1", msg, null);
+    }
+
+    public static <T> Result<T> success(String msg, T data) {
+        return new Result<T>("1", msg, data);
+    }
+
+    public static <T> Result<T> fail(String msg) {
+        return new Result<T>("0", msg, null);
+    }
 
 }

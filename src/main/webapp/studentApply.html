@@ -13,41 +13,51 @@
 
     <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
     <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+
+
 </head>
+
 
 <body class="admin-main">
 
+<script src="laydate/laydate.js"></script>
+<script type="text/javascript" src="plugins/layui/layui.js"></script>
+
+
 <blockquote class="layui-elem-quote">
-    <a href="studentIndex.html" class="layui-btn layui-btn-small" id="add">
+    <a href="studentIndex.html" class="layui-btn layui-btn-small" id="back">
         <i class="layui-icon">&#xe608;</i> 返回主页
     </a>
 </blockquote>
-
 
 <div style="margin: 15px;">
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
         <legend>请选择您要预约的驾驶培训信息</legend>
     </fieldset>
 
+
     <form class="layui-form" action="">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">开始日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="startdate" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
-                           autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+                    <input type="text" name="date" id="start" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
+                           autocomplete="off" class="layui-input">
                 </div>
             </div>
         </div>
+
+
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">结束日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="enddate" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
-                           autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+                    <input type="text" name="date" id="end" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
+                           autocomplete="off" class="layui-input">
                 </div>
             </div>
         </div>
+
 
         <div class="layui-form-item">
             <label class="layui-form-label">教练</label>
@@ -84,7 +94,62 @@
         </div>
     </form>
 </div>
-<script type="text/javascript" src="plugins/layui/layui.js"></script>
+
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form(),
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
+        studentApply.verify({
+            title: function (value) {
+                if (value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        //监听提交
+        studentApply.on('submit(demo1)', function (data) {
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+    });
+</script>
+
+
+<script>
+    laydate.render({
+        elem: '#start',
+        calendar: true,
+        theme: 'grid',
+        type: 'datetime',
+        min: 0,
+        max: 30
+    });
+</script>
+
+<script>
+    laydate.render({
+        elem: '#end',
+        calendar: true,
+        theme: 'grid',
+        type: 'datetime',
+        min: 0,
+        max: 30
+    });
+</script>
 
 </body>
 
