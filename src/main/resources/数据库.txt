@@ -13,6 +13,11 @@ CREATE TABLE `user` (
 
 
 
+
+
+
+
+
 CREATE TABLE `record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userName` varchar(100) DEFAULT NULL,
