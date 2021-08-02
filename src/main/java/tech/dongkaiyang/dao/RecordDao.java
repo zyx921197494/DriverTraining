@@ -21,6 +21,7 @@ public interface RecordDao {
     boolean insertRecord(Record record);
 
     /**
+     * 珂珂
      * 由用户card查询记录
      *
      * @param card
