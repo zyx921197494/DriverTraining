@@ -22,7 +22,7 @@ public interface RecordDao {
 
     /*刘裕珂
 
-     * 珂珂
+     * 珂珂123456
      * 由用户card查询记录
      *
      * @param card
