@@ -5,6 +5,14 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
+
+
+
+
+
+
+
+
 CREATE TABLE `record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userName` varchar(100) DEFAULT NULL,
