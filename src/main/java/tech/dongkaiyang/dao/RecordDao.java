@@ -21,7 +21,7 @@ public interface RecordDao {
     boolean insertRecord(Record record);
 
     /*刘裕珂
-
+     *教练预约系统
      * 珂珂123456
      * 由用户card查询记录
      *
