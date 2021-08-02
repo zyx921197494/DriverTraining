@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Record implements Serializable {
 
+
     private int id;
     private String stuCard;
     private String teaCard;
