@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 
 public class RecordVo {
 
-    @JsonProperty("stuCard")
-    private String stuCard;
+//    @JsonProperty("stuCard")
+//    private String stuCard;
     @JsonProperty("teaCard")
     private String teaCard;
     @JsonProperty("startTime")

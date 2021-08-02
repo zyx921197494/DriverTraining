@@ -45,6 +45,13 @@ public interface RecordDao {
     @Select("select r.id, r.stu_card, r.tea_card, r.start_time, r.end_time, r.location, r.status from user, record as r where user.identity=2 and user.name like #{teaName} and user.card=r.tea_card order by end_time desc")
     List<Record> selectTeaRecords(String teaName);
 
+    //查所有记录按结束时间降序
+    @Select("select r.id, r.stu_card, r.tea_card, r.start_time, r.end_time, r.location, r.status from user, record as r where user.identity=1 and user.card=r.stu_card order by end_time desc")
+    List<Record> selectAllStuRecords();
+
+//    //查所有教练记录按结束时间降序
+//    @Select("select r.id, r.stu_card, r.tea_card, r.start_time, r.end_time, r.location, r.status from user, record as r where user.identity=2 and user.card=r.tea_card order by end_time desc")
+//    List<Record> selectAllTeaRecords();
 
     /**
      * 更改record记录的状态(即教练审核预约申请)

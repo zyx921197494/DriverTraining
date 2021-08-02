@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>记录查询</title>
+    <title>管理员查询教练注册申请</title>
     <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
     <link rel="stylesheet" href="css/global.css" media="all">
     <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
@@ -14,24 +14,22 @@
 <script src="js2/jquery-3.3.1.min.js"></script>
 <div class="admin-main">
 
-
     <fieldset class="layui-elem-field">
-        <legend>管理员查看所有记录</legend>
+        <legend>教练注册申请</legend>
+
         <div class="layui-field-box layui-form">
             <table class="layui-table admin-table">
                 <thead>
-                <tr>
+                <tr style="width: 30px">
                     <!--<th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>-->
-                    <th>记录id</th>
-                    <th>学员</th>
-                    <th>教练</th>
-                    <th>开始时间</th>
-                    <th>结束时间</th>
-                    <th>地点</th>
-                    <th>状态</th>
+                    <th style="text-align: center">id</th>
+                    <th style="text-align: center">姓名</th>
+                    <th style="text-align: center">身份证</th>
+                    <th style="text-align: center">邮箱</th>
+                    <th colspan="2"  style="text-align: center">审核</th>
                 </tr>
                 </thead>
-                <tbody id="content">
+                <tbody id="content" style="align-content: normal">
 
                 </tbody>
             </table>
@@ -44,34 +42,25 @@
     </div>
 </div>
 
-
 <script>
     $(function () {
         $.ajax({
             type: "POST",
-            url: "/admin/findAllStuRecords",
+            url: "/admin/findRegisterTea",
             dataType: "json",
             contentType: "application/json",
             success: function (result) {
                 var data = result.data;
                 for (var item of data) {
-                    var s = "";
-                    if (item.status === 0) {
-                        s = "未审核";
-                    } else if (item.status === 1) {
-                        s = "已通过";
-                    } else {
-                        s = "未通过";
-                    }
+                    var card = item.card.toString().substr(0, 14);
                     $("#content").append(
-                        `<tr>
-                    <td>${item.id}</td>
-                    <td>${item.stuCard}</td>
-                    <td>${item.teaCard}</td>
-                    <td>${item.startTime.year}-${item.startTime.monthValue}-${item.startTime.dayOfMonth} ${item.startTime.hour}:${item.startTime.minute}:${item.startTime.second}</td>
-                    <td>${item.endTime.year}-${item.endTime.monthValue}-${item.endTime.dayOfMonth} ${item.endTime.hour}:${item.endTime.minute}:${item.endTime.second}</td>
-                    <td>${item.location}</td>
-                    <td>${s}</td>
+                        `<tr style="text-align: center">
+                    <td style="text-align: center">${item.id}</td>
+                    <td style="text-align: center">${item.name}</td>
+                    <td style="text-align: center">${card}xxxx</td>
+                    <td style="text-align: center">${item.email}</td>
+                    <td style="text-align: center"><button type="button" value="1" class="layui-btn-normal layui-btn-radius" onclick="">通过</button></td>
+                    <td style="text-align: center"><button type="button" value="0" class="layui-btn-danger layui-btn-radius" onclick="">拒绝</button></td>
                     </tr>`
                     );
                 }
@@ -80,6 +69,7 @@
         })
     })
 </script>
+
 </body>
 
 </html>

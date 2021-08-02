@@ -30,13 +30,22 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public List<Record> findStuRecords() {
+        return recordDao.selectAllStuRecords();
+    }
+
+    @Override
     public List<Record> findAllTeaRecords(String teaName) {
         return recordDao.selectTeaRecords(teaName);
     }
 
+//    @Override
+//    public List<Record> findTeaRecords() {
+//        return recordDao.selectAllTeaRecords();
+//    }
 
     @Override
-    public boolean updateStatus(int status,int id) {
+    public boolean updateStatus(int status, int id) {
         return recordDao.updateStatus(status, id);
     }
 

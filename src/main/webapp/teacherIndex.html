@@ -20,8 +20,8 @@
 <body>
 <div class="jumbotron">
     <div class="container">
-        <h3>你好！
-            <font color='6495ed'><div id="nameId"></div></font>教练
+        <h3>你好！教练
+            <p id="nameId" style="font-size: 50px;color: #01AAED" class="layui-bg-blue"></p>
         </h3>
         <script>
             $.ajax({
@@ -38,25 +38,25 @@
         </script>
         <p>欢迎使用驾驶培训服务系统</p>
         <br>
-        <button type="button" class="btn btn-default btn-lg"id="button1">
+        <button type="button" class="btn btn-default btn-lg" id="button1">
             <span class="glyphicon glyphicon-th" aria-hidden="true"></span> 受理预约
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg"id="button2">
+        <button type="button" class="btn btn-default btn-lg" id="button2">
             <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 查看授课记录
         </button>
         <br>
-        <button type="button" class="btn btn-default btn-lg"id="button3">
+        <button type="button" class="btn btn-default btn-lg" id="button3">
             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 退出登陆
         </button>
         <script>
-            $("#button1").on('click', function() {
+            $("#button1").on('click', function () {
                 $(location).attr('href', "http://localhost:8080/teacherAccept.html");
             })
-            $("#button2").on('click', function() {
+            $("#button2").on('click', function () {
                 $(location).attr('href', "http://localhost:8080/teacherRecord.html");
             })
-            $("#button3").on('click', function() {
+            $("#button3").on('click', function () {
                 $.ajax({
                     type: "POST",
                     url: "/logout",

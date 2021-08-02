@@ -37,6 +37,10 @@ public interface RecordService {
      */
     List<Record> findAllTeaRecords(String teaName);
 
+    List<Record> findStuRecords();
+
+//    List<Record> findTeaRecords();
+
     /**
      * 更新record状态
      *

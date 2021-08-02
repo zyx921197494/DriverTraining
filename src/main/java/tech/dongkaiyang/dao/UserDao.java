@@ -28,7 +28,7 @@ public interface UserDao {
     /**
      * 按用户身份证card用户
      *
-     * @param user
+     * @param
      * @return
      */
     @Select("select * from user where card=#{card} and password=#{password}")
@@ -47,7 +47,7 @@ public interface UserDao {
      *
      * @return
      */
-    @Select("select id, name, card, rank from user where identity=2")
+    @Select("select id, email, name, card, rank from user where identity=2")
     List<User> selectAvailable();
 
     /**

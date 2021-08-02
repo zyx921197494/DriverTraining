@@ -5,23 +5,19 @@ var navs = [{
 	"children": [{
 		"title": "学员预约记录",
 		"icon": "&#xe641;",
-		"href": "http://localhost:8080/adminStuRecord.html"
-	}, {
-		"title": "教练上课记录",
-		"icon": "&#xe63c;",
-		"href": "http://localhost:8080/index.html"
+		"href": "http://localhost:8080/adminRecord.html"
 	}]
 }, {
 	"title": "人员管理",
 	"icon": "fa-cogs",
-	"spread": false,
+	"spread": true,
 	"children": [{
 		"title": "教练注册审核",
 		"icon": "fa-table",
-		"href": "begtable.html"
+		"href": "http://localhost:8080/adminTeaSignup.html"
 	}, {
 		"title": "教练等级修改",
 		"icon": "fa-navicon",
-		"href": "navbar.html"
+		"href": "http://localhost:8080/adminTeaRank.html"
 	}]
 }];

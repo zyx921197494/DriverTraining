@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>管理员查询教练名单</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="css/global.css" media="all">
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/table.css"/>
+</head>
+
+<body>
+<script src="js2/jquery-3.3.1.min.js"></script>
+
+<div class="admin-main">
+
+    <fieldset class="layui-elem-field">
+        <legend>教练名单</legend>
+
+        <div class="layui-field-box layui-form" style="text-align: center">
+            <table class="layui-table admin-table" style="text-align: center">
+                <thead>
+                <tr>
+                    <!--<th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>-->
+                    <th style="text-align: center">id</th>
+                    <th style="text-align: center">姓名</th>
+                    <th style="text-align: center">身份证</th>
+                    <th style="text-align: center">邮箱</th>
+                    <th style="text-align: center">等级</th>
+                    <th style="text-align: center">修改等级</th>
+                    <th style="text-align: center">提交</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+    <div class="admin-table-page">
+        <div id="paged" class="page">
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/stu/available",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                var data = result.data;
+                for (var item of data) {
+                    var card = item.card.toString().substr(0, 14);
+                    $("#content").append(
+                        `<tr>
+                        <td style="text-align: center">${item.id}</td>
+                        <td style="text-align: center">${item.name}</td>
+                        <td style="text-align: center">${card}</td>
+                        <td style="text-align: center">${item.email}</td>
+                        <td style="text-align: center">${item.rank}</td>
+                        <td style="text-align: center">
+                        <select  style="text-align: center; margin:0; padding: 2%; width: auto; display: block" class="layui-select" id="rank">
+                            <option style="text-align: center">等级 Ⅰ</option>
+                            <option style="text-align: center">等级 Ⅲ</option>
+                            <option style="text-align: center">等级 Ⅲ</option>
+                        </select>
+                        </td>
+                        <td><button type="button" value="" class="layui-btn-normal layui-btn-radius" onclick="">提交</button></td>
+                        </tr>`
+                    );
+                }
+
+            }
+        })
+    })
+</script>
+
+</body>
+
+</html>

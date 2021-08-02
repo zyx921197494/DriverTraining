@@ -18,14 +18,19 @@
     <script src="js/menuPage.js"></script>
 </head>
 <body>
+
+<script src="plugins/layui/layui.js"></script>
+<script src="plugins/layui/font"></script>
 <div class="jumbotron">
     <div class="container">
-        <h3>你好！<font color='6495ed'><p id="nameId"></p></font></h3>
+        <h3>你好！
+<!--            <font color='6495ed'>-->
+                <p id="nameId" style="font-size: 50px;color: #01AAED" class="layui-bg-blue"></p>
+<!--            </font></h3>-->
         <script>
             $.ajax({
                 type: "POST",
                 url: "/getCurrentUser",
-                // data:sendData,
                 dataType: "json",
                 contentType: "application/json",
                 success: function (user) {

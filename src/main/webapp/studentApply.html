@@ -42,7 +42,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">开始日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="start"  placeholder="yyyy-MM-dd HH:mm:ss"
+                    <input type="text" name="start" id="start" placeholder="yyyy-MM-dd HH:mm:ss"
                            autocomplete="off" class="layui-input">
                 </div>
             </div>
@@ -53,8 +53,9 @@
             <div class="layui-inline">
                 <label class="layui-form-label">结束日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="end" lay-verify="datetime" placeholder="yyyy-MM-dd HH:mm:ss"
-                           autocomplete="off" class="layui-input">
+
+                    <input type="text" name="end" id="end" placeholder="yyyy-MM-dd HH:mm:ss" autocomplete="off"
+                           class="layui-input"> <!--lay-verify="datetime"-->
                 </div>
             </div>
         </div>
@@ -63,7 +64,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">教练</label>
             <div class="layui-input-block">
-                <select id="teaList" name="interest" lay-filter="aihao">
+                <select id="teaList" name="teaList"> <!--lay-filter="aihao"-->
                 </select>
             </div>
         </div>
@@ -71,7 +72,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">训练地点</label>
             <div class="layui-input-block">
-                <select name="interest" lay-filter="aihao">
+                <select id="trainLocation" name="trainLocation"> <!--lay-filter="aihao"-->
                     <option value="训练场1">训练场1</option>
                     <option value="训练场2">训练场2</option>
                     <option value="训练场3">训练场3</option>
@@ -83,7 +84,7 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                <button class="layui-btn">立即提交</button> <!--lay-submit="" lay-filter="demo1"-->
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
@@ -98,9 +99,9 @@
             layedit = layui.layedit,
             laydate = layui.laydate;
 
-        // //创建一个编辑器
-        // var editIndex = layedit.build('LAY_demo_editor');
-        // //自定义验证规则
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
         // studentApply.verify({
         //     title: function (value) {
         //         if (value.length < 5) {
@@ -112,8 +113,8 @@
         //         layedit.sync(editIndex);
         //     }
         // });
-        //
-        // //监听提交
+
+        //监听提交
         // studentApply.on('submit(demo1)', function (data) {
         //     layer.alert(JSON.stringify(data.field), {
         //         title: '最终的提交信息'
@@ -146,26 +147,57 @@
 
 
 <script>
+    var s, e;
     laydate.render({
         elem: '#start',
         calendar: true,
         theme: 'grid',
         type: 'datetime',
         min: 0,
-        max: 30
+        max: 30,
+        done: function (start) {
+            alert("start" + start);
+            s = start;
+        }
     });
-</script>
-
-<script>
     laydate.render({
         elem: '#end',
         calendar: true,
         theme: 'grid',
         type: 'datetime',
         min: 0,
-        max: 30
+        max: 30,
+        done: function (end) {
+            alert("end" + end);
+            e = end;
+        }
     });
+    var teaCard = $("teaList").val();
+    var st = $("input[name=start]").val();
+    alert("st=" + st);
+    alert("teaCard=" + teaCard);
+    var trainLocation = $("trainLocation").val();
+    alert("trainLocation=" + trainLocation);
+    var sendData = JSON.stringify({'teaCard': teaCard, 'startTime': s, 'endTime': e, 'location': trainLocation});
+    console.log("senData=" + sendData);
+    alert("sendData" + sendData);
+    $.ajax({
+        type: "POST",
+        url: "/stu/apply",
+        data: sendData,
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            if (data.status === "0") {
+                alert("data.msg" + data.msg);
+            } else {
+                alert("预约成功，返回主页");
+                $(location).attr('href', "http:localhost:8080/studentIndex.html");
+            }
+        }
+    })
 </script>
+
 
 </body>
 

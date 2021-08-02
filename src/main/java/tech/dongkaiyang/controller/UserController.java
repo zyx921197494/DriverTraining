@@ -184,7 +184,9 @@ public class UserController {
     public Result submit(@RequestBody RecordVo recordVo, HttpSession session) {
 
         User user = getSessionUser(session);
-
+        if (user == null) {
+            return Result.fail("未登录，请先登录");
+        }
         String[] start = recordVo.getStartTime().split(" ");
         String[] end = recordVo.getEndTime().split(" ");
 
@@ -256,16 +258,45 @@ public class UserController {
         return "quit";
     }
 
+    /**
+     * 管理员查所有记录
+     *
+     * @return
+     */
+    @PostMapping("/admin/findAllRecords")
+    @ResponseBody
+    public Result<List<Record>> findAllRecords() {
+        List<Record> records = recordService.findStuRecords();
+        if (records.isEmpty()) {
+            Result.fail("未查找到记录");
+        }
+        return Result.success("查询学员记录成功", records);
+    }
+
+//    /**
+//     * 管理员查所有教练记录
+//     * @return
+//     */
+//    @PostMapping("/admin/findAllTeaRecords")
+//    @ResponseBody
+//    public Result<List<Record>> findAllTeaRecords() {
+//        List<Record> records = recordService.findTeaRecords();
+//        if (records.isEmpty()) {
+//            Result.fail("未查找到记录");
+//        }
+//        return Result.success("查询教练成功", records);
+//    }
 
     /**
      * 管理员按用户名查询学员记录
      * 测试
      *
+     * @param stuName
      * @return
      */
-    @PostMapping("/admin/findAllStuRecords")
+    @PostMapping("/admin/findAllStuRecordsByName")
     @ResponseBody
-    public Result<List<Record>> findAllStuRecords(@RequestParam("stuName") String stuName) {
+    public Result<List<Record>> findAllStuRecordsByName(@RequestParam("stuName") String stuName) {
         List<Record> records = recordService.findAllStuRecords("%" + stuName + "%");
         if (records.isEmpty()) {
             Result.fail("未查找到记录");
@@ -279,9 +310,9 @@ public class UserController {
      *
      * @return
      */
-    @PostMapping("/admin/findAllTeaRecords")
+    @PostMapping("/admin/findAllTeaRecordsByName")
     @ResponseBody
-    public Result<List<Record>> findAllTeaRecords(@RequestParam("teaName") String teaName) {
+    public Result<List<Record>> findAllTeaRecordsByName(@RequestParam("teaName") String teaName) {
         List<Record> records = recordService.findAllTeaRecords("%" + teaName + "%");
         if (records.isEmpty()) {
             return Result.fail("查询教练记录失败");
