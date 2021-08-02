@@ -24,7 +24,7 @@ public interface RecordDao {
      *教练预约系统
      * 珂珂123456
      * 由用户card查询记录
-     *
+     * 123456
      * @param card
      * @return
      */
