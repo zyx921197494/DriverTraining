@@ -20,7 +20,8 @@ public interface RecordDao {
     @Insert("insert into record (stu_card, tea_card, start_time, end_time , location, status) values (#{stuCard}, #{teaCard}, #{startTime}, #{endTime}, #{location}, #{status})")
     boolean insertRecord(Record record);
 
-    /**刘裕珂
+    /*刘裕珂
+
      * 珂珂
      * 由用户card查询记录
      *
