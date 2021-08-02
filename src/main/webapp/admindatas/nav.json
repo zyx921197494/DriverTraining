@@ -5,26 +5,26 @@
 		"spread": true,
 		"children": [
 			{
-				"title": "学生学习记录",
+				"title": "学生预约记录",
 				"icon": "&#xe641;",
-				"href": "button.html"
+				"href": "http://localhost:8080/adminStuRecord.html"
 			}, {
 				"title": "教练上课记录",
 				"icon": "&#xe63c;",
-				"href": "form.html"
+				"href": "http://localhost:8080/index.html"
 			}
 		]
 	}, {
-		"title": "权限管理",
+		"title": "人员管理",
 		"icon": "&#x1002;",
 		"spread": false,
 		"children": [
 			{
-				"title": "查看管理员",
+				"title": "教练注册审核",
 				"icon": "fa-table",
 				"href": "begtable.html"
 			}, {
-				"title": "权限修改",
+				"title": "教练等级修改",
 				"icon": "fa-navicon",
 				"href": "navbar.html"
 			}

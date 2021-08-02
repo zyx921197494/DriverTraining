@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>记录查询</title>
+    <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="css/global.css" media="all">
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/table.css"/>
+</head>
+
+<body>
+<script src="js2/jquery-3.3.1.min.js"></script>
+<div class="admin-main">
+
+
+    <fieldset class="layui-elem-field">
+        <legend>管理员查看所有记录</legend>
+        <div class="layui-field-box layui-form">
+            <table class="layui-table admin-table">
+                <thead>
+                <tr>
+                    <!--<th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>-->
+                    <th>记录id</th>
+                    <th>学员</th>
+                    <th>教练</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>地点</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody id="content">
+
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+    <div class="admin-table-page">
+        <div id="paged" class="page">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/admin/findAllStuRecords",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                var data = result.data;
+                for (var item of data) {
+                    var s = "";
+                    if (item.status === 0) {
+                        s = "未审核";
+                    } else if (item.status === 1) {
+                        s = "已通过";
+                    } else {
+                        s = "未通过";
+                    }
+                    $("#content").append(
+                        `<tr>
+                    <td>${item.id}</td>
+                    <td>${item.stuCard}</td>
+                    <td>${item.teaCard}</td>
+                    <td>${item.startTime.year}-${item.startTime.monthValue}-${item.startTime.dayOfMonth} ${item.startTime.hour}:${item.startTime.minute}:${item.startTime.second}</td>
+                    <td>${item.endTime.year}-${item.endTime.monthValue}-${item.endTime.dayOfMonth} ${item.endTime.hour}:${item.endTime.minute}:${item.endTime.second}</td>
+                    <td>${item.location}</td>
+                    <td>${s}</td>
+                    </tr>`
+                    );
+                }
+
+            }
+        })
+    })
+</script>
+</body>
+
+</html>
