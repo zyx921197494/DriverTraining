@@ -22,6 +22,7 @@
 
 <script src="laydate/laydate.js"></script>
 <script type="text/javascript" src="plugins/layui/layui.js"></script>
+<script src="js2/jquery-3.3.1.min.js"></script>
 
 
 <blockquote class="layui-elem-quote">
@@ -41,7 +42,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">开始日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="start" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
+                    <input type="text" name="date" id="start"  placeholder="yyyy-MM-dd HH:mm:ss"
                            autocomplete="off" class="layui-input">
                 </div>
             </div>
@@ -52,7 +53,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">结束日期</label>
                 <div class="layui-input-block">
-                    <input type="text" name="date" id="end" lay-verify="date" placeholder="yyyy-MM-dd HH:mm:ss"
+                    <input type="text" name="date" id="end" lay-verify="datetime" placeholder="yyyy-MM-dd HH:mm:ss"
                            autocomplete="off" class="layui-input">
                 </div>
             </div>
@@ -62,13 +63,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">教练</label>
             <div class="layui-input-block">
-                <select name="interest" lay-filter="aihao">
-                    <option value=""></option>
-                    <option value="0">张教练</option>
-                    <option value="1">李教练</option>
-                    <option value="2">王教练</option>
-                    <option value="3">董教练</option>
-                    <option value="4">刘教练</option>
+                <select id="teaList" name="interest" lay-filter="aihao">
                 </select>
             </div>
         </div>
@@ -77,11 +72,11 @@
             <label class="layui-form-label">训练地点</label>
             <div class="layui-input-block">
                 <select name="interest" lay-filter="aihao">
-                    <option value=""></option>
-                    <option value="0">训练场1</option>
-                    <option value="1">训练场2</option>
-                    <option value="2">训练场3</option>
-                    <option value="3">训练场4</option>
+                    <option value="训练场1">训练场1</option>
+                    <option value="训练场2">训练场2</option>
+                    <option value="训练场3">训练场3</option>
+                    <option value="训练场4">训练场4</option>
+                    <option value="训练场5">训练场4</option>
                 </select>
             </div>
         </div>
@@ -103,29 +98,50 @@
             layedit = layui.layedit,
             laydate = layui.laydate;
 
-        //创建一个编辑器
-        var editIndex = layedit.build('LAY_demo_editor');
-        //自定义验证规则
-        studentApply.verify({
-            title: function (value) {
-                if (value.length < 5) {
-                    return '标题至少得5个字符啊';
-                }
-            },
-            pass: [/(.+){6,12}$/, '密码必须6到12位'],
-            content: function (value) {
-                layedit.sync(editIndex);
-            }
-        });
-
-        //监听提交
-        studentApply.on('submit(demo1)', function (data) {
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            })
-            return false;
-        });
+        // //创建一个编辑器
+        // var editIndex = layedit.build('LAY_demo_editor');
+        // //自定义验证规则
+        // studentApply.verify({
+        //     title: function (value) {
+        //         if (value.length < 5) {
+        //             return '标题至少得5个字符啊';
+        //         }
+        //     },
+        //     pass: [/(.+){6,12}$/, '密码必须6到12位'],
+        //     content: function (value) {
+        //         layedit.sync(editIndex);
+        //     }
+        // });
+        //
+        // //监听提交
+        // studentApply.on('submit(demo1)', function (data) {
+        //     layer.alert(JSON.stringify(data.field), {
+        //         title: '最终的提交信息'
+        //     })
+        //     return false;
+        // });
     });
+</script>
+
+
+<script>
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/stu/available",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                var data = result.data;
+                console.log(data);
+                for (var item of data) {
+                    $("#teaList").append(
+                        `<option value=${item.card}>教练ID:${item.id}  姓名:${item.name}  等级:${item.rank}</option>`
+                    );
+                }
+            }
+        })
+    })
 </script>
 
 

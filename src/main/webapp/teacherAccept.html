@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns:javascrtpt="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="utf-8">
@@ -18,10 +18,17 @@
 
 <body style=" background-color: gainsboro;">
 
+<script src="js2/jquery-3.3.1.min.js"></script>
+
 <div style="margin:0px; background-color: white; margin:0 10px;">
     <blockquote class="layui-elem-quote">
-        <button type="button" class="layui-btn layui-btn-small" id="getAll"><i class="fa fa-plus" aria-hidden="true"></i> 返回主页
-        </button>
+        <a href="teacherIndex.html">
+            <button type="button" class="layui-btn layui-btn-small" id="getAll"><i class="fa fa-plus"
+                                                                                   aria-hidden="true"></i> 返回主页
+            </button>
+        </a>
+
+
         <form class="layui-form" style="float:right;">
             <div class="layui-form-item" style="margin:0;">
                 <label class="layui-form-label">查询信息</label>
@@ -29,7 +36,8 @@
                     <input type="text" name="name" placeholder="输入学员姓名" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux" style="padding:0;">
-                    <button lay-filter="search" class="layui-btn" lay-submit><i class="fa fa-search" aria-hidden="true"></i> 查询
+                    <button lay-filter="search" class="layui-btn" lay-submit><i class="fa fa-search"
+                                                                                aria-hidden="true"></i> 查询
                     </button>
                 </div>
             </div>
@@ -44,18 +52,55 @@
                 <tr>
                     <!--<th style="width: 30px;"><input type="checkbox" lay-filter="allselector" lay-skin="primary"></th>-->
                     <th>id</th>
-                    <th>学员姓名</th>
-                    <th>预约日期</th>
-                    <th>预约时间段</th>
+                    <th>学员</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>训练地点</th>
                     <th>状态</th>
                 </tr>
                 </thead>
+                <tbody id="list">
+                </tbody>
             </table>
         </div>
     </fieldset>
 
     <div id="content" style="width: 100%;height: 533px;"></div>
 
+    <script>
+        $(function () {
+            $.ajax({
+                type: "POST",
+                url: "/tea/search",
+                dataType: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    var data = result.data;
+                    for (var item of data) {
+                        var s = "";
+                        if (item.status === 0) {
+                            s = "未审核";
+                        } else if (item.status === 1) {
+                            s = "已通过";
+                        } else {
+                            s = "未通过";
+                        }
+                        $("#list").append(
+                            `<tr>
+                    <td>${item.id}</td>
+                    <td>${item.stuCard}</td>
+                    <td>${item.startTime.year}-${item.startTime.monthValue}-${item.startTime.dayOfMonth} ${item.startTime.hour}:${item.startTime.minute}:${item.startTime.second}</td>
+                    <td>${item.endTime.year}-${item.endTime.monthValue}-${item.endTime.dayOfMonth} ${item.endTime.hour}:${item.endTime.minute}:${item.endTime.second}</td>
+                    <td>${item.location}</td>
+                    <td>${s}</td>
+                    </tr>`
+                        );
+                    }
+
+                }
+            })
+        })
+    </script>
 
 </div>
 
