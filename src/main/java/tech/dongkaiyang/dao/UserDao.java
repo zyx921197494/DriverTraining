@@ -15,7 +15,6 @@ public interface UserDao {
      */
     @Insert("insert into user (card, email, name, password, identity, rank) values (#{card}, #{email}, #{name}, #{password}, #{identity}, #{rank})")
     public void insertUser(User user);
-
     /**
      * 按用户名查询用户
      *
