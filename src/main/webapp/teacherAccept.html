@@ -29,19 +29,19 @@
         </a>
 
 
-        <form class="layui-form" style="float:right;">
-            <div class="layui-form-item" style="margin:0;">
-                <label class="layui-form-label">查询信息</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="name" placeholder="输入学员姓名" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-form-mid layui-word-aux" style="padding:0;">
-                    <button lay-filter="search" class="layui-btn" lay-submit><i class="fa fa-search"
-                                                                                aria-hidden="true"></i> 查询
-                    </button>
-                </div>
-            </div>
-        </form>
+<!--        <form class="layui-form" style="float:right;">-->
+<!--            <div class="layui-form-item" style="margin:0;">-->
+<!--                <label class="layui-form-label">查询信息</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="name" placeholder="输入学员姓名" autocomplete="off" class="layui-input">-->
+<!--                </div>-->
+<!--                <div class="layui-form-mid layui-word-aux" style="padding:0;">-->
+<!--                    <button lay-filter="search" class="layui-btn" lay-submit><i class="fa fa-search"-->
+<!--                                                                                aria-hidden="true"></i> 查询-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
     </blockquote>
 
     <fieldset class="layui-elem-field">
@@ -107,9 +107,9 @@
 
         function accept(obj) {
             var status = $(obj).val();
-            alert("status=" + status);
+            // alert("status=" + status);
             var recordId = $(obj).parent().parent().attr("id");
-            alert("recordId=" + recordId);
+            // alert("recordId=" + recordId);
             $.ajax({
                 type: "GET",
                 url: "/tea/accept?status=" + status + "&id=" + recordId,

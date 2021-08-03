@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册</title>
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/Login.css">
+
     <script src="js2/jquery-3.3.1.min.js"></script>
     <script src="js2/signUp.js"></script>
 </head>
@@ -25,75 +36,182 @@
         <div class="txtb">
             <input type="email" id="email" placeholder="邮箱">
         </div>
-        <div class="txtb">
+
+
+        <div class="text-input">
             <input type="text" id="code" placeholder="邮箱验证码">
-            <button type="submit" id="sendCode">获取验证码</button>
+            <button class="layui-btn-warm" type="submit" id="sendCode" onclick="send()">获取验证码</button>
         </div>
-        <select name="identity" id="identity">
+        <br>
+
+
+        <select class="layui-form-select" name="identity" id="identity">
             <option value=1>学员</option>
             <option value=3>教练</option>
-        </select><br>
-        <div id="userCue"><h2><font color="#4682b4">欢迎注册</font></h2></div>
-        <button type="submit" id="submit">注册</button>
+        </select>
+
+
+        <!--        <div id="userCue"><h2><font color="#4682b4">欢迎注册</font></h2></div>-->
+        <button type="submit" id="submit" onclick="signup()">注册</button>
+
+
         <script>
 
-            $("#sendCode").click(function () {
+            // $("#sendCode").click(function () {
+            //     var email = $("#email").val().trim();
+            //     if (email.length === 0) {
+            //         alert("您未填写邮箱")
+            //         return;
+            //     } else {
+            //         $.ajax({
+            //             type: "GET",
+            //             url: "/verify/sendEmail?email=" + email,
+            //             dataType: "json",
+            //             contentType: "application/json",
+            //             success: function (realCode) {
+            //                 // alert(realCode)
+            //                 $("#submit").click(function () {
+            //                     var user = $("#user").val().trim();
+            //                     var card = $("#card").val().trim();
+            //                     var password = $("#password").val().trim();
+            //                     var email = $("#email").val().trim();
+            //                     var identity = $("#identity").val().trim();
+            //                     var sendCode = $("#sendCode").val().trim();
+            //                     if (user.length === 0 || card.length === 0 || password.length === 0 || email.length === 0 || sendCode.length === 0) {
+            //                         // alert("您有一些内容没有填写。")
+            //                     } else {
+            //                         if (realCode === sendCode) {
+            //                             var sendData = JSON.stringify({
+            //                                 'name': user,
+            //                                 'card': card,
+            //                                 'password': password,
+            //                                 'email': email,
+            //                                 'identity': identity
+            //                             });
+            //                             $.ajax({
+            //                                 type: "POST",
+            //                                 url: "/verify/signUp",
+            //                                 data: sendData,
+            //                                 dataType: "json",
+            //                                 contentType: "application/json",
+            //                                 success: function (data) {
+            //                                     if (data) {
+            //                                         alert("注册成功，请登陆");
+            //                                         window.history.back(-1);
+            //                                     } else {
+            //                                         alert("唉，出错了，请再试吧");
+            //                                     }
+            //                                 }
+            //                             })
+            //                         } else {
+            //                             alert("验证码错误")
+            //                         }
+            //
+            //                     }
+            //                 });
+            //             }
+            //         })
+            //     }
+            // });
+
+            var real;
+
+            function send() {
                 var email = $("#email").val().trim();
                 if (email.length === 0) {
-                    alert("您未填写邮箱")
-                    return;
+                    alert("您未填写邮箱");
                 } else {
                     $.ajax({
                         type: "GET",
                         url: "/verify/sendEmail?email=" + email,
                         dataType: "json",
                         contentType: "application/json",
-                        success: function (realCode) {
-                            // alert(realCode)
-                            $("#submit").click(function () {
-                                var user = $("#user").val().trim();
-                                var card = $("#card").val().trim();
-                                var password = $("#password").val().trim();
-                                var email = $("#email").val().trim();
-                                var identity = $("#identity").val().trim();
-                                var sendCode = $("#sendCode").val().trim();
-                                if (user.length === 0 || card.length === 0 || password.length === 0 || email.length === 0 || sendCode.length === 0) {
-                                    // alert("您有一些内容没有填写。")
-                                } else {
-                                    if (realCode === sendCode) {
-                                        var sendData = JSON.stringify({
-                                            'name': user,
-                                            'card': card,
-                                            'password': password,
-                                            'email': email,
-                                            'identity': identity
-                                        });
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "/verify/signUp",
-                                            data: sendData,
-                                            dataType: "json",
-                                            contentType: "application/json",
-                                            success: function (data) {
-                                                if (data) {
-                                                    alert("注册成功，请登陆");
-                                                    window.history.back(-1);
-                                                } else {
-                                                    alert("唉，出错了，请再试吧");
-                                                }
-                                            }
-                                        })
-                                    } else {
-                                        alert("验证码错误")
-                                    }
-
-                                }
-                            });
+                        success: function (data) {
+                            if (data.status === "1") {
+                                alert(data.msg);
+                                real = data.data;
+                            } else {
+                                alert(data.msg);
+                            }
                         }
                     })
                 }
-            });
+            }
+
+            function signup() {
+                var user = $("#user").val().trim();
+                var card = $("#card").val().trim();
+                var password = $("#password").val().trim();
+                var email = $("#email").val().trim();
+                var identity = $("#identity").val().trim();
+                var code = $("#code").val().trim();
+                let validate = validatePassword(password);
+                if (user.length === 0 || card.length === 0 || password.length === 0 || email.length === 0 || identity.length === 0) {
+                    alert("请填写完整信息");
+                } else if (code.length === 0) {
+                    alert("请填写邮箱验证码");
+                } else if (real.toString() !== code.toString()) {
+                    alert("验证码错误");
+                } else if (validate === "0") {
+                    alert("密码请介于6--18位之间并包含大写和小写字符");
+                } else if (card.length !== 18) {
+                    alert("请填写合法的身份证号码");
+                } else {
+                    var sendData = JSON.stringify({
+                        'name': user,
+                        'card': card,
+                        'password': password,
+                        'email': email,
+                        'identity': identity
+                    });
+                    // alert(sendData);
+                    console.log(sendData);
+                    $.ajax({
+                        type: "POST",
+                        url: "/verify/signUp",
+                        data: sendData,
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.status === "1") {
+                                alert("注册成功，请登陆");
+                                window.history.back(-1);
+                            } else {
+                                alert(data.msg);
+                            }
+                        }
+                    })
+                }
+            }
+
+            function validatePassword(password) {
+                if (password.length < 6 || password.length > 18) {
+                    return "0";
+                }
+                var big = false, small = false, num = false;
+                for (i = 0; i < password.length; i++) {
+                    if (password.charAt(i) > 'a' && password.charAt(i) < 'z') {
+                        small = true;
+                        break;
+                    }
+                }
+                for (i = 0; i < password.length; i++) {
+                    if (password.charAt(i) > 'A' && password.charAt(i) < 'Z') {
+                        big = true;
+                        break;
+                    }
+                }
+                for (i = 0; i < password.length; i++) {
+                    if (password.charAt(i) >= '0' && password.charAt(i) <= '9') {
+                        num = true;
+                        break;
+                    }
+                }
+                return big && small && num ? "1" : "0";
+            }
+
         </script>
+
         <!--<script>-->
         <!--    layui.use(['form', 'layedit', 'laydate'], function () {-->
         <!--        var form = layui.form(),-->

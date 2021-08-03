@@ -84,7 +84,7 @@
     function submit(obj) {
         var teaCard = $(obj).parent().parent().attr("id");
         var rank = document.getElementById(teaCard + "-rank").value;
-        alert("rank=" + rank + "teaCard=" + teaCard);
+        // alert("rank=" + rank + "teaCard=" + teaCard);
         $.ajax({
             type: "GET",
             url: "/admin/changeRank?card=" + teaCard + "&rank=" + rank,

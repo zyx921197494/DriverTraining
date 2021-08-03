@@ -45,8 +45,8 @@ public class UserController {
      * @param s
      * @return
      */
-    @RequestMapping(value = "/verify/check", method = RequestMethod.POST)
-    @ResponseBody
+//    @RequestMapping(value = "/verify/check", method = RequestMethod.POST)
+//    @ResponseBody
     public boolean check(@RequestParam("s") String s) {
         return userService.verify(s) == 0;
     }
@@ -60,14 +60,16 @@ public class UserController {
      */
     @RequestMapping("/verify/sendEmail")
     @ResponseBody
-    public String sendEmail(@RequestParam("email") String email, HttpSession session) throws MessagingException {
-        System.out.println(mailSender == null);
+    public Result<String> sendEmail(@RequestParam("email") String email, HttpSession session) throws MessagingException {
+        if(!check(email)){
+            return Result.success("邮箱已被注册");
+        }
         StringBuilder code = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
             code.append(random.nextInt(9));
         }
-        System.out.println(code);
+        System.out.println("code = " + code);
         session.setAttribute("code", code.toString());
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -80,7 +82,7 @@ public class UserController {
         mailSender.send(message);
 
         System.out.println(code.toString());
-        return code.toString();
+        return Result.success("验证邮件发送成功",code.toString());
     }
 
 
@@ -94,11 +96,12 @@ public class UserController {
     // TODO 注册成功后到登录页面
     @RequestMapping(value = "/verify/signUp", method = RequestMethod.POST)
     @ResponseBody
-    public boolean signUp(@RequestBody User user) {
-        if (user.getIdentity() == 1) {
+    public Result<String> signUp(@RequestBody User user) {
+        if (check(user.getCard()) && check(user.getEmail())) {
             user.setRank(0);
-        }
-        return userService.insertUser(user);
+            boolean b = userService.insertUser(user);
+            return b ? Result.success("注册成功") : Result.fail("注册失败");
+        } else return Result.fail("身份证或邮箱已存在");
     }
 
     /**
@@ -113,20 +116,22 @@ public class UserController {
         User dbUser = userService.queryUser(user.getCard(), user.getPassword());
         HttpSession session = request.getSession();
         if (dbUser == null) {
-            return new Result("0", "http://localhost:8080/index.html");
+            return new Result("0", "身份证或密码错误", "http://localhost:8080/index.html");
         }
         dbUser.setPassword(null);
         session.setAttribute("user", dbUser);
 
         switch (dbUser.getIdentity()) {
             case 1:
-                return new Result("1", "http://localhost:8080/studentIndex.html");
+                return new Result("1", "登陆成功", "http://localhost:8080/studentIndex.html");
             case 2:
-                return new Result("2", "http://localhost:8080/teacherIndex.html");
+                return new Result("2", "登陆成功", "http://localhost:8080/teacherIndex.html");
+            case 3:
+                return new Result("3", "登录失败，您的教练申请尚未审核", "http://localhost:8080/index.html");
             case 4:
-                return new Result("4", "http://localhost:8080/adminIndex.html");
+                return new Result("4", "登陆成功", "http://localhost:8080/adminIndex.html");
             default:
-                return new Result("0", "http://localhost:8080/index.html");
+                return new Result("0", "登录失败", "http://localhost:8080/index.html");
         }
     }
 
@@ -332,7 +337,7 @@ public class UserController {
     public Result changeRank(@RequestParam("card") String card, @RequestParam("rank") int rank) {
         boolean success = userService.changeRank(card, rank);
         if (success) {
-            return Result.success("更改教练等级成功","adminTeaRank.html");
+            return Result.success("更改教练等级成功", "adminTeaRank.html");
         }
         return Result.fail("更改教练等级失败");
     }
@@ -365,7 +370,7 @@ public class UserController {
     @ResponseBody
     public Result adminAccept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
         if (identity == 2 && userService.changeIdentity(card, identity) && userService.changeRank(card, 1)) {
-            return Result.success("提交成功，教练申请通过","adminTeaSignup.html");
+            return Result.success("提交成功，教练申请通过", "adminTeaSignup.html");
         } else if (identity == 3 && userService.changeIdentity(card, 1)) {
             return Result.success("提交成功，教练申请未通过", "adminTeaSignup.html");
         }
