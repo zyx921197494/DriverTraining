@@ -26,7 +26,7 @@
                     <th style="text-align: center">姓名</th>
                     <th style="text-align: center">身份证</th>
                     <th style="text-align: center">邮箱</th>
-                    <th colspan="2"  style="text-align: center">审核</th>
+                    <th colspan="2" style="text-align: center">审核</th>
                 </tr>
                 </thead>
                 <tbody id="content" style="align-content: normal">
@@ -54,13 +54,13 @@
                 for (var item of data) {
                     var card = item.card.toString().substr(0, 14);
                     $("#content").append(
-                        `<tr style="text-align: center">
+                        `<tr style="text-align: center" id="${item.card}">
                     <td style="text-align: center">${item.id}</td>
                     <td style="text-align: center">${item.name}</td>
                     <td style="text-align: center">${card}xxxx</td>
                     <td style="text-align: center">${item.email}</td>
-                    <td style="text-align: center"><button type="button" value="1" class="layui-btn-normal layui-btn-radius" onclick="">通过</button></td>
-                    <td style="text-align: center"><button type="button" value="0" class="layui-btn-danger layui-btn-radius" onclick="">拒绝</button></td>
+                    <td style="text-align: center"><button type="button" value="2" class="layui-btn-normal layui-btn-radius" onclick="accept(this)">通过</button></td>
+                    <td style="text-align: center"><button type="button" value="3" class="layui-btn-danger layui-btn-radius" onclick="accept(this)">拒绝</button></td>
                     </tr>`
                     );
                 }
@@ -68,6 +68,27 @@
             }
         })
     })
+
+
+    function accept(obj) {
+        var identity = $(obj).val();
+        var teaCard = $(obj).parent().parent().attr("id");
+        $.ajax({
+            type: "GET",
+            url: "/admin/accept?card=" + teaCard + "&identity=" + identity,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.status === "1") {
+                    alert("审核成功");
+                    $(location).attr('href', data.data);
+                } else {
+                    alert(data.msg);
+                }
+            }
+        })
+    }
+
 </script>
 
 </body>

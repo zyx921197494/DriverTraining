@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
 
+    <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="plugins/layui/css/layui.css" media="all"/>
     <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
 
@@ -18,11 +19,11 @@
 </head>
 
 
-<body class="admin-main">
+<body class="admin-main" onload="getTea()">
 
+<script src="js2/jquery-3.3.1.min.js"></script>
 <script src="laydate/laydate.js"></script>
 <script type="text/javascript" src="plugins/layui/layui.js"></script>
-<script src="js2/jquery-3.3.1.min.js"></script>
 
 
 <blockquote class="layui-elem-quote">
@@ -37,7 +38,7 @@
     </fieldset>
 
 
-    <form class="layui-form" action="">
+    <form class="layui-form">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">开始日期</label>
@@ -61,30 +62,47 @@
         </div>
 
 
+        <!--        <div class="layui-form-item">-->
+        <!--            <label class="layui-form-label">教练</label>-->
+        <!--            <div class="layui-input-block">-->
+        <!--                <select id="teaList" name="teaList" lay-filter=""> &lt;!&ndash;lay-filter="aihao"&ndash;&gt;-->
+        <!--                </select>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
         <div class="layui-form-item">
             <label class="layui-form-label">教练</label>
             <div class="layui-input-block">
-                <select id="teaList" name="teaList"> <!--lay-filter="aihao"-->
-                </select>
+                <form class="layui-form">
+                    <select id="teaList" name="teaList" lay-filter="teacher">
+                        <option value=""></option>
+                    </select>
+                </form>
             </div>
         </div>
+
 
         <div class="layui-form-item">
             <label class="layui-form-label">训练地点</label>
             <div class="layui-input-block">
-                <select id="trainLocation" name="trainLocation"> <!--lay-filter="aihao"-->
-                    <option value="训练场1">训练场1</option>
-                    <option value="训练场2">训练场2</option>
-                    <option value="训练场3">训练场3</option>
-                    <option value="训练场4">训练场4</option>
-                    <option value="训练场5">训练场4</option>
-                </select>
+                <form class="layui-form">
+                    <select id="trainLocation" name="trainLocation" lay-filter="place"> <!--lay-filter="aihao"-->
+                        <option value=""></option>
+                        <option value="训练场1">训练场1</option>
+                        <option value="训练场2">训练场2</option>
+                        <option value="训练场3">训练场3</option>
+                        <option value="训练场4">训练场4</option>
+                        <option value="训练场5">训练场5</option>
+                    </select>
+                </form>
             </div>
         </div>
 
+
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn">立即提交</button> <!--lay-submit="" lay-filter="demo1"-->
+                <button id="send" class="layui-btn" onclick="sendPost()">立即提交</button>
+                <!--lay-submit="" lay-filter="demo1"-->
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
@@ -93,61 +111,9 @@
 
 
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
-        var form = layui.form(),
-            layer = layui.layer,
-            layedit = layui.layedit,
-            laydate = layui.laydate;
-
-        //创建一个编辑器
-        var editIndex = layedit.build('LAY_demo_editor');
-        //自定义验证规则
-        // studentApply.verify({
-        //     title: function (value) {
-        //         if (value.length < 5) {
-        //             return '标题至少得5个字符啊';
-        //         }
-        //     },
-        //     pass: [/(.+){6,12}$/, '密码必须6到12位'],
-        //     content: function (value) {
-        //         layedit.sync(editIndex);
-        //     }
-        // });
-
-        //监听提交
-        // studentApply.on('submit(demo1)', function (data) {
-        //     layer.alert(JSON.stringify(data.field), {
-        //         title: '最终的提交信息'
-        //     })
-        //     return false;
-        // });
-    });
-</script>
-
-
-<script>
-    $(function () {
-        $.ajax({
-            type: "POST",
-            url: "/stu/available",
-            dataType: "json",
-            contentType: "application/json",
-            success: function (result) {
-                var data = result.data;
-                console.log(data);
-                for (var item of data) {
-                    $("#teaList").append(
-                        `<option value=${item.card}>教练ID:${item.id}  姓名:${item.name}  等级:${item.rank}</option>`
-                    );
-                }
-            }
-        })
-    })
-</script>
-
-
-<script>
     var s, e;
+    var teaCard, trainlocation;
+    var form;
     laydate.render({
         elem: '#start',
         calendar: true,
@@ -156,7 +122,6 @@
         min: 0,
         max: 30,
         done: function (start) {
-            alert("start" + start);
             s = start;
         }
     });
@@ -168,35 +133,173 @@
         min: 0,
         max: 30,
         done: function (end) {
-            alert("end" + end);
             e = end;
         }
     });
-    var teaCard = $("teaList").val();
-    var st = $("input[name=start]").val();
-    alert("st=" + st);
-    alert("teaCard=" + teaCard);
-    var trainLocation = $("trainLocation").val();
-    alert("trainLocation=" + trainLocation);
-    var sendData = JSON.stringify({'teaCard': teaCard, 'startTime': s, 'endTime': e, 'location': trainLocation});
-    console.log("senData=" + sendData);
-    alert("sendData" + sendData);
-    $.ajax({
-        type: "POST",
-        url: "/stu/apply",
-        data: sendData,
-        dataType: "json",
-        contentType: "application/json",
-        success: function (data) {
-            if (data.status === "0") {
-                alert("data.msg" + data.msg);
-            } else {
-                alert("预约成功，返回主页");
-                $(location).attr('href', "http:localhost:8080/studentIndex.html");
+
+
+    // layui.use(['form', 'layedit', 'laydate'], function () {
+    //     var form = layui.form(),
+    //         layer = layui.layer,
+    //         layedit = layui.layedit,
+    //         laydate = layui.laydate;
+    //
+    //     创建一个编辑器
+    //     var editIndex = layedit.build('LAY_demo_editor');
+    //     自定义验证规则
+    //     studentApply.verify({
+    // title: function (value) {
+    // if (value.length < 5) {
+    //     return '标题至少得5个字符啊';
+    // }
+    // },
+    // pass: [/(.+){6,12}$/, '密码必须6到12位'],
+    // content: function (value) {
+    // layedit.sync(editIndex);
+    // }
+    // });
+
+    // 监听提交
+    // studentApply.on('submit(send)', function (data) {
+    // layer.alert(JSON.stringify(data.field), {
+    //     title: '最终的提交信息'
+    // })
+    // return false;
+    //     return true;
+    // });
+    // });
+
+    function getTea() {
+        $.ajax({
+            type: "POST",
+            url: "/stu/available",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                var data = result.data;
+                for (var item of data) {
+                    $("#teaList").append(
+                        `<option value=${item.card}>教练ID:${item.id}  姓名:${item.name}  等级:${item.rank}</option>`
+                    );
+                }
+                layui.use('form', function () {
+                    form = layui.form(); //只有执行了这一步，部分表单元素才会自动修饰成功
+                    form.render();
+                });
             }
-        }
-    })
+        })
+    }
+
+    // layui.use('form', function () {
+    //     var form = layui.form(); //只有执行了这一步，部分表单元素才会自动修饰成功
+    //     form.render();
+    // });
+
+    function sendPost() {
+        // form.on('select(teacher)', function (data) {
+        //     teaCard = data.elem[selectedIndex].text();
+        //     console.log("获取选择教师：" + teaCard.value());
+        // })
+        // form.on('select(place)', function (data) {
+        //     trainlocation = data;
+        // })
+
+        teaCard = document.getElementById("teaList").value;
+        trainlocation = document.getElementById("trainLocation").value;
+        var sendData = JSON.stringify({'teaCard': teaCard, 'startTime': s, 'endTime': e, 'location': trainlocation});
+        $.ajax({
+            type: "POST",
+            url: "/stu/apply",
+            data: sendData,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.status === "0") {
+                    alert("data.msg" + data.msg);
+                } else {
+                    alert("预约成功，返回主页");
+                    $(location).attr('href', "studentIndex.html");
+                }
+            }
+        })
+    }
+
+
 </script>
+
+
+<!--<script>-->
+<!--    $(function () {-->
+<!--        $.ajax({-->
+<!--            type: "POST",-->
+<!--            url: "/stu/available",-->
+<!--            dataType: "json",-->
+<!--            contentType: "application/json",-->
+<!--            success: function (result) {-->
+<!--                var data = result.data;-->
+<!--                console.log(data);-->
+<!--                for (var item of data) {-->
+<!--                    $("#teaList").append(-->
+<!--                        `<option value=${item.card}>教练ID:${item.id}  姓名:${item.name}  等级:${item.rank}</option>`-->
+<!--                    );-->
+<!--                }-->
+<!--            }-->
+<!--        })-->
+<!--    })-->
+<!--</script>-->
+
+
+<!--<script>-->
+<!--    var s, e;-->
+<!--    laydate.render({-->
+<!--        elem: '#start',-->
+<!--        calendar: true,-->
+<!--        theme: 'grid',-->
+<!--        type: 'datetime',-->
+<!--        min: 0,-->
+<!--        max: 30,-->
+<!--        done: function (start) {-->
+<!--            alert("start" + start);-->
+<!--            s = start;-->
+<!--        }-->
+<!--    });-->
+<!--    laydate.render({-->
+<!--        elem: '#end',-->
+<!--        calendar: true,-->
+<!--        theme: 'grid',-->
+<!--        type: 'datetime',-->
+<!--        min: 0,-->
+<!--        max: 30,-->
+<!--        done: function (end) {-->
+<!--            alert("end" + end);-->
+<!--            e = end;-->
+<!--        }-->
+<!--    });-->
+<!--    var teaCard = $("teaList").val();-->
+<!--    var st = $("input[name=start]").val();-->
+<!--    alert("st=" + st);-->
+<!--    alert("teaCard=" + teaCard);-->
+<!--    var trainLocation = $("trainLocation").val();-->
+<!--    alert("trainLocation=" + trainLocation);-->
+<!--    var sendData = JSON.stringify({'teaCard': teaCard, 'startTime': s, 'endTime': e, 'location': trainLocation});-->
+<!--    console.log("senData=" + sendData);-->
+<!--    alert("sendData" + sendData);-->
+<!--    $.ajax({-->
+<!--        type: "POST",-->
+<!--        url: "/stu/apply",-->
+<!--        data: sendData,-->
+<!--        dataType: "json",-->
+<!--        contentType: "application/json",-->
+<!--        success: function (data) {-->
+<!--            if (data.status === "0") {-->
+<!--                alert("data.msg" + data.msg);-->
+<!--            } else {-->
+<!--                alert("预约成功，返回主页");-->
+<!--                $(location).attr('href', "http:localhost:8080/studentIndex.html");-->
+<!--            }-->
+<!--        }-->
+<!--    })-->
+<!--</script>-->
 
 
 </body>

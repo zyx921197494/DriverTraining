@@ -76,7 +76,7 @@ public interface UserDao {
      * @return
      */
     @Update("update user set rank=#{rank} where card=#{card} and identity=2")
-    boolean updateRank(@Param("card") String card,@Param("rank") int rank);
+    boolean updateRank(@Param("card") String card, @Param("rank") int rank);
 
     /**
      * 身份证或邮箱是否被使用

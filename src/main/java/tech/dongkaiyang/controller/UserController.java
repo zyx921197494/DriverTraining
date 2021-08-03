@@ -182,7 +182,6 @@ public class UserController {
     @PostMapping("/stu/apply")
     @ResponseBody
     public Result submit(@RequestBody RecordVo recordVo, HttpSession session) {
-
         User user = getSessionUser(session);
         if (user == null) {
             return Result.fail("未登录，请先登录");
@@ -238,11 +237,11 @@ public class UserController {
     // TODO 教练接受请求
     @GetMapping("/tea/accept")
     @ResponseBody
-    public Result acceptApply(@RequestParam("status") int status, @RequestParam("id") int id) {
+    public Result<String> acceptApply(@RequestParam("status") int status, @RequestParam("id") int id) {
         boolean success = recordService.updateStatus(status, id);
         if (success) {
-            return Result.success("接受预约成功");
-        } else return Result.fail("接受预约失败");
+            return Result.success("审核预约成功", "teacherAccept.html");
+        } else return Result.fail("审核预约失败");
     }
 
     /**
@@ -328,12 +327,12 @@ public class UserController {
      * @param rank
      * @return
      */
-    @PostMapping("/admin/changeRank")
+    @GetMapping("/admin/changeRank")
     @ResponseBody
     public Result changeRank(@RequestParam("card") String card, @RequestParam("rank") int rank) {
         boolean success = userService.changeRank(card, rank);
         if (success) {
-            return Result.success("更改教练等级成功");
+            return Result.success("更改教练等级成功","adminTeaRank.html");
         }
         return Result.fail("更改教练等级失败");
     }
@@ -362,13 +361,13 @@ public class UserController {
      * @param identity
      * @return
      */
-    @PostMapping("/admin/accept")
+    @GetMapping("/admin/accept")
     @ResponseBody
     public Result adminAccept(@RequestParam("card") String card, @RequestParam("identity") int identity) {
         if (identity == 2 && userService.changeIdentity(card, identity) && userService.changeRank(card, 1)) {
-            return Result.success("提交成功，教练申请通过");
+            return Result.success("提交成功，教练申请通过","adminTeaSignup.html");
         } else if (identity == 3 && userService.changeIdentity(card, 1)) {
-            return Result.success("提交成功，教练申请未通过");
+            return Result.success("提交成功，教练申请未通过", "adminTeaSignup.html");
         }
         return Result.fail("审核提交失败");
     }

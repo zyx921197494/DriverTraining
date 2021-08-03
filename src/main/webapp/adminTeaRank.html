@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="css/table.css"/>
 </head>
 
-<body>
+<body onload="refresh()">
+
 <script src="js2/jquery-3.3.1.min.js"></script>
 
 <div class="admin-main">
@@ -57,20 +58,20 @@
                 for (var item of data) {
                     var card = item.card.toString().substr(0, 14);
                     $("#content").append(
-                        `<tr>
+                        `<tr id="${item.card}">
                         <td style="text-align: center">${item.id}</td>
                         <td style="text-align: center">${item.name}</td>
-                        <td style="text-align: center">${card}</td>
+                        <td style="text-align: center">${card}xxxx</td>
                         <td style="text-align: center">${item.email}</td>
                         <td style="text-align: center">${item.rank}</td>
                         <td style="text-align: center">
-                        <select  style="text-align: center; margin:0; padding: 2%; width: auto; display: block" class="layui-select" id="rank">
-                            <option style="text-align: center">等级 Ⅰ</option>
-                            <option style="text-align: center">等级 Ⅲ</option>
-                            <option style="text-align: center">等级 Ⅲ</option>
+                        <select style="text-align: center; margin:0; padding: 2%; width: auto; display: block" class="layui-form-select" id="${item.card}-rank">
+                            <option style="text-align: center" value="1">等级 Ⅰ</option>
+                            <option style="text-align: center" value="2">等级 Ⅱ</option>
+                            <option style="text-align: center" value="3">等级 Ⅲ</option>
                         </select>
                         </td>
-                        <td><button type="button" value="" class="layui-btn-normal layui-btn-radius" onclick="">提交</button></td>
+                        <td><button type="button" value="" class="layui-btn-normal layui-btn-radius" onclick="submit(this)">提交</button></td>
                         </tr>`
                     );
                 }
@@ -78,6 +79,34 @@
             }
         })
     })
+
+
+    function submit(obj) {
+        var teaCard = $(obj).parent().parent().attr("id");
+        var rank = document.getElementById(teaCard + "-rank").value;
+        alert("rank=" + rank + "teaCard=" + teaCard);
+        $.ajax({
+            type: "GET",
+            url: "/admin/changeRank?card=" + teaCard + "&rank=" + rank,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.status === "1") {
+                    alert("修改成功");
+                    $(location).attr('href', data.data);
+                } else {
+                    alert(data.msg);
+                }
+            }
+        })
+    }
+
+    function refresh() {
+        layui.use('table', function () {
+            let form = layui.form(); //只有执行了这一步，部分表单元素才会自动修饰成功
+            form.render();
+        });
+    }
 </script>
 
 </body>
