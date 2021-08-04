@@ -103,6 +103,7 @@ public class MethodTest {
             mailSender.send(message);
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
+            System.out.println(e.getCause());
             e.printStackTrace();
         }
     }
