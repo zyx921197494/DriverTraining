@@ -6,7 +6,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tech.dongkaiyang.domain.Record;
-import tech.dongkaiyang.domain.Result;
+import tech.dongkaiyang.vo.Result;
 import tech.dongkaiyang.domain.User;
 import tech.dongkaiyang.service.RecordService;
 import tech.dongkaiyang.service.UserService;
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

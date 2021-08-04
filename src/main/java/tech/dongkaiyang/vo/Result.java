@@ -1,4 +1,4 @@
-package tech.dongkaiyang.domain;
+package tech.dongkaiyang.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -72,7 +72,7 @@ public class MethodTest {
 //        System.out.println(userService.queryUser(user));
     }
 
-    @org.junit.Test
+    @Test
     public void dateTimeTest() {
         String s = "2021-07-30 11:10:11";
         String[] ss = s.split(" ");
@@ -83,7 +83,7 @@ public class MethodTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void sendEmail() {
         System.out.println(mailSender == null);
         StringBuilder code = new StringBuilder();
@@ -98,7 +98,7 @@ public class MethodTest {
             helper = new MimeMessageHelper(message, true);
             helper.setSubject("注册验证码");
             helper.setText("你的注册验证码为：" + code.toString() + " 请尽快验证", false);
-            helper.setTo("3403300680@qq.com");
+            helper.setTo("winkelzyx@163.com");
             helper.setFrom("921197494@qq.com");
             mailSender.send(message);
         } catch (MessagingException e) {
@@ -106,7 +106,5 @@ public class MethodTest {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
-//        return "邮件发送成功";
     }
 }
