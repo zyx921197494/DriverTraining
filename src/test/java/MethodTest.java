@@ -102,7 +102,6 @@ public class MethodTest {
             helper.setFrom("921197494@qq.com");
             mailSender.send(message);
         } catch (MessagingException e) {
-            System.out.println(e.getCause());
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
