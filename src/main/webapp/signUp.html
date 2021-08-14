@@ -34,6 +34,9 @@
             <input type="password" id="password" placeholder="密码">
         </div>
         <div class="txtb">
+            <input type="password" id="repassword" placeholder="确认密码">
+        </div>
+        <div class="txtb">
             <input type="email" id="email" placeholder="邮箱">
         </div>
 
@@ -42,8 +45,6 @@
             <input type="text" id="code" placeholder="邮箱验证码">
             <button class="layui-btn-warm" type="submit" id="sendCode" onclick="send()">获取验证码</button>
         </div>
-        <br>
-
 
         <select class="layui-form-select" name="identity" id="identity">
             <option value=1>学员</option>
@@ -142,6 +143,7 @@
                 var user = $("#user").val().trim();
                 var card = $("#card").val().trim();
                 var password = $("#password").val().trim();
+                var repassword = $("#repassword").val().trim();
                 var email = $("#email").val().trim();
                 var identity = $("#identity").val().trim();
                 var code = $("#code").val().trim();
@@ -156,6 +158,8 @@
                     alert("密码请介于6--18位之间并包含大写和小写字符");
                 } else if (card.length !== 18) {
                     alert("请填写合法的身份证号码");
+                } else if (password !== repassword) {
+                    alert("两次输入的密码不一致");
                 } else {
                     var sendData = JSON.stringify({
                         'name': user,
